@@ -10,9 +10,8 @@ import jwt from "jsonwebtoken";
  */
 
 async function handelUserRegisterController(req, res) {
- //Data Extract
- console.log(req.body);
  
+   try{
   const { username, password, email } = req.body;
   if (!username  || !password || !email) {
     return res.status(400).json({
@@ -59,6 +58,13 @@ async function handelUserRegisterController(req, res) {
             email:user.email
         }
     })
+  }
+  catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 }
 
 export {handelUserRegisterController}
