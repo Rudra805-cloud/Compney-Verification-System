@@ -51,7 +51,7 @@ async function handelUserRegisterController(req, res) {
       message: "User Register successfully",
       token,
       user: {
-        id: user._id,
+        userId: user._id,
         username: user.username,
         email: user.email,
       },
@@ -71,8 +71,6 @@ async function handelUserRegisterController(req, res) {
 
 async function handelUserLoginController(req, res) {
   try {
-    console.log(req.body);
-    
     const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({
@@ -110,6 +108,37 @@ async function handelUserLoginController(req, res) {
       message: "User logged in successfully",
       token,
       user: {
+        userId: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
+/**
+ * @name handelProfileController
+ * @description Handle user profile view ,user can view profile easily
+ * @access public
+ */
+
+async function handelProfileController(req, res) {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "User details fetched successfully ",
+      user: {
         id: user._id,
         username: user.username,
         email: user.email,
@@ -123,4 +152,4 @@ async function handelUserLoginController(req, res) {
   }
 }
 
-export { handelUserRegisterController, handelUserLoginController };
+export { handelUserRegisterController, handelUserLoginController,handelProfileController };

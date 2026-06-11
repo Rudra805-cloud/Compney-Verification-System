@@ -1,5 +1,6 @@
 import { Router } from "express";
-import {handelUserRegisterController,handelUserLoginController} from "../controllers/auth.controller.js"
+import authUser from "../middlewares/auth.middleware.js";
+import {handelUserRegisterController,handelUserLoginController,handelProfileController} from "../controllers/auth.controller.js"
 const authRouter=Router();
 
 /**
@@ -22,12 +23,12 @@ authRouter.post("/login",handelUserLoginController)
 //  */
 // authRouter.get("/logout",handelUserLogoutController)
 
-// /**
-//  * @route get /api/auth/get-me
-//  * @description Get details of loged in user 
-//  * @access public 
-//  */
-// authRouter.get("/get-me",authUser,handelGetmeController)
+/**
+ * @route get /api/auth/profile
+ * @description Get details of loged in user 
+ * @access public 
+ */
+authRouter.get("/profile",authUser,handelProfileController)
 
 
 
