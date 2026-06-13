@@ -20,8 +20,8 @@ async function validationService(companyName, websiteUrl) {
   
     return {
     companyName: normalized.companyName,
-    websiteUrl: updatedUrl.normalizedUrl,
-
+    hostname: updatedUrl.hostname,
+    websiteUrl:updatedUrl.originalUrl,
     checks: validationChecks,
 
     trustScore,

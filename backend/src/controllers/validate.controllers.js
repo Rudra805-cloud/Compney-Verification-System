@@ -2,10 +2,10 @@ import Validation from "../models/validation.model.js";
 import Company from "../models/company.model.js";
 import { validationService } from "../services/validation/index.service.js";
 import { normalizeUrl } from "../services/validation/url.service.js";
-import { checks } from "../services/validation/checks.service.js";
 
 async function companyValidationController(req, res) {
   try {
+    const {force}=req.query
     const { companyName, websiteUrl } = req.body;
     //check inputs
     if (!companyName || !websiteUrl) {
@@ -16,13 +16,13 @@ async function companyValidationController(req, res) {
     }
 
     //add checing to reduse no of hits of api
-    const normalizedUrl = normalizeUrl(websiteUrl);
+   const { hostname } = normalizeUrl(websiteUrl);
     let company = await Company.findOne({
-      websiteUrl: normalizedUrl.normalizedUrl,
+      hostname: hostname
     });
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-
-    if (company && company.lastValidatedAt > oneDayAgo) {
+     
+    if (company && company.lastValidatedAt > oneDayAgo && force !== "true") {
       return res.status(200).json({
         success: true,
         cached: true,
@@ -35,7 +35,8 @@ async function companyValidationController(req, res) {
     if (!company) {
       company = await Company.create({
         companyName: result.companyName,
-        websiteUrl: result.websiteUrl,
+        websiteUrl:result.websiteUrl,
+        hostname: result.hostname,
         trustScore: result.trustScore,
         riskLevel: result.riskLevel,
         summary: result.summary,

@@ -4,8 +4,8 @@ import {companyValidationController} from '../controllers/validate.controllers.j
 const validateRouter=Router();
 
 /**
- * @route req of search about company /api/validate
- * @description Get details of loged in user 
+ * @route /api/validate/?force=true
+ * @description run validation engine
  * @access public 
  */
 validateRouter.post('/',companyValidationController);

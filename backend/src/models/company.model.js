@@ -7,7 +7,14 @@ const companySchema = new mongoose.Schema(
       required: true,
       trim: true
     },
-    websiteUrl: {
+    hostname: {
+      type: String,
+      required: true,
+      lowercase:true,
+      trim: true,
+       index: true
+    },
+     websiteUrl: {
       type: String,
       required: true,
       lowercase:true,

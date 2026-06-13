@@ -7,7 +7,8 @@ try {
 
     return {
       originalUrl: websiteUrl,
-      normalizedUrl: parsedUrl.href,
+      // normalizedUrl: parsedUrl.href,
+      normalizedUrl: `${parsedUrl.protocol}//${parsedUrl.hostname}`,
       hostname: parsedUrl.hostname
     };
   } catch (error) {
