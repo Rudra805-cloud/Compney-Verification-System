@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import express from "express"
 import { authRouter } from './routes/auth.routes.js';
+import { validateRouter } from './routes/validate.routes.js';
 
 dotenv.config();
 
@@ -11,8 +12,10 @@ app.get('/', (req, res) => {
   res.send('Hello world!')
 })
 
-//routes
+//auth routes
 app.use('/api/auth',authRouter);
+//validate company routes
+app.use('/api/validate',validateRouter);
 
 
 export default app;

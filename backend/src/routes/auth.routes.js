@@ -16,18 +16,13 @@ authRouter.post("/register",handelUserRegisterController);
  * @access public 
  */
 authRouter.post("/login",handelUserLoginController)
-// /**
-//  * @route get /api/auth/logout
-//  * @description Logot a user
-//  * @access public 
-//  */
-// authRouter.get("/logout",handelUserLogoutController)
 
 /**
  * @route get /api/auth/profile
  * @description Get details of loged in user 
  * @access public 
  */
+
 authRouter.get("/profile",authUser,handelProfileController)
 
 

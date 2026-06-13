@@ -63,11 +63,7 @@ async function handelUserRegisterController(req, res) {
     });
   }
 }
-/**
- * @name handelUserLoginController
- * @description Handle user register contain user name ,password etc
- * @access public
- */
+
 
 async function handelUserLoginController(req, res) {
   try {
@@ -120,6 +116,7 @@ async function handelUserLoginController(req, res) {
     });
   }
 }
+
 /**
  * @name handelProfileController
  * @description Handle user profile view ,user can view profile easily

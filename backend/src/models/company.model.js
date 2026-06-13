@@ -5,9 +5,9 @@ const companySchema = new mongoose.Schema(
     companyName: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
     },
-    website: {
+    websiteUrl: {
       type: String,
       required: true,
       lowercase:true,
@@ -17,18 +17,18 @@ const companySchema = new mongoose.Schema(
       type: Number,
       default: 0,
       min: 0,
-      max: 100,
+      max: 100
     },
 
     riskLevel: {
       type: String,
       default: "Unknown",
-      trim: true,
+      trim: true
     },
     summary: {
       type: String,
       default: "",
-      trim: true,
+      trim: true
     },
     lastValidatedAt:{
     type: Date,
