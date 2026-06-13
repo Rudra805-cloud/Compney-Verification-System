@@ -125,7 +125,7 @@ async function handelUserLoginController(req, res) {
 
 async function handelProfileController(req, res) {
   try {
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({
         success: false,

@@ -1,8 +1,14 @@
 import mongoose from "mongoose";
-
+import User from "./user.model.js";
+import Company from "./company.model.js";
 
 const validationSchema = new mongoose.Schema({
 
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
   companyId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Company",
@@ -14,7 +20,8 @@ const validationSchema = new mongoose.Schema({
     sslEnabled: Boolean,
     contactInfoFound: Boolean,
     linkedInFound: Boolean,
-    domainAgeYears: Boolean
+    domainAgeYears: Number,      
+    domainAgeValid: Boolean      
   },
 
   trustScore: Number,

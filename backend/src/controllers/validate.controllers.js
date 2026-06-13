@@ -5,6 +5,7 @@ import { normalizeUrl } from "../services/validation/url.service.js";
 
 async function companyValidationController(req, res) {
   try {
+    const userId=req.user.id;
     const {force}=req.query
     const { companyName, websiteUrl } = req.body;
     //check inputs
@@ -52,13 +53,15 @@ async function companyValidationController(req, res) {
     }
     //ADD IN VALIDATION MODEL
     await Validation.create({
+      userId: userId,
       companyId: company._id,
       checks: {
         websiteExists: result.checks.websiteExists,
         sslEnabled: result.checks.sslEnabled,
         contactInfoFound: result.checks.contactInfoFound,
         linkedInFound: result.checks.linkedInFound,
-        domainAgeValid: result.checks.domainAgeYears,
+        domainAgeValid: result.checks.domainAgeValid,
+        domainAgeYears:result.checks.domainAgeYears
       },
       trustScore: result.trustScore,
       riskLevel: result.riskLevel,

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {companyValidationController} from '../controllers/validate.controllers.js'
+import authMiddleware from '../middlewares/auth.middleware.js'
 
 const validateRouter=Router();
 
@@ -8,6 +9,6 @@ const validateRouter=Router();
  * @description run validation engine
  * @access public 
  */
-validateRouter.post('/',companyValidationController);
+validateRouter.post('/',authMiddleware,companyValidationController);
 
 export {validateRouter}

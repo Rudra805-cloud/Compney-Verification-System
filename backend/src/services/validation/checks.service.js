@@ -5,6 +5,7 @@ async function checks(hostname,companyName) {
         sslEnabled: true,
         contactInfoFound: false,
         linkedInFound: false,
+        domainAgeValid:false,
         domainAgeYears: 0
     };
 }
