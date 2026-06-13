@@ -5,8 +5,11 @@ const SCORE_RULES = {
   sslEnabled: 20,
   contactInfoFound: 20,
   linkedInFound: 20,
-  domainAgeValid: 20
 };
+const DOMAIN_AGE_MAX = 20;
+const MAX_SCORE =
+  Object.values(SCORE_RULES).reduce((a, b) => a + b, 0) + DOMAIN_AGE_MAX;
+
 
 function calculateScore(checks) {
     let score=0;
@@ -15,8 +18,13 @@ function calculateScore(checks) {
         score+=SCORE_RULES[key]
        }
     }
-    
-    return score;
+     // special rule: domain age (numeric logic)
+  if (typeof checks.domainAgeYears === "number") {
+    if (checks.domainAgeYears >= 3) score += 20;
+    else if (checks.domainAgeYears >= 1) score += 10;
+    else score += 0;
+  }
+    return (score/MAX_SCORE)*100;
 }
 
 function  getRiskLevel(score) {
