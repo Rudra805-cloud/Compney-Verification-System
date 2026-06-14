@@ -19,7 +19,7 @@ function calculateScore(checks) {
        }
     }
      // special rule: domain age (numeric logic)
-  if (typeof checks.domainAgeYears === "number") {
+    if (typeof checks.domainAgeYears === "number") {
     if (checks.domainAgeYears >= 3) score += 20;
     else if (checks.domainAgeYears >= 1) score += 10;
     else score += 0;

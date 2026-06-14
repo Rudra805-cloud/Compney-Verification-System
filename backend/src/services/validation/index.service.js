@@ -23,7 +23,6 @@ async function validationService(companyName, websiteUrl) {
     hostname: updatedUrl.hostname,
     websiteUrl:updatedUrl.originalUrl,
     checks: validationChecks,
-
     trustScore,
     riskLevel,
 

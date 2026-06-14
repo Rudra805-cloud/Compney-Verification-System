@@ -17,7 +17,7 @@ async function companyValidationController(req, res) {
     }
 
     //add checing to reduse no of hits of api
-   const { hostname } = normalizeUrl(websiteUrl);
+   const { hostname,originalUrl } = normalizeUrl(websiteUrl);
     let company = await Company.findOne({
       hostname: hostname
     });
@@ -31,13 +31,13 @@ async function companyValidationController(req, res) {
       });
     }
     //run validation engine
-    const result = await validationService(companyName, websiteUrl);
+    const result = await validationService(companyName, hostname);
 
     if (!company) {
       company = await Company.create({
         companyName: result.companyName,
-        websiteUrl:result.websiteUrl,
-        hostname: result.hostname,
+        websiteUrl:originalUrl,
+        hostname: hostname,
         trustScore: result.trustScore,
         riskLevel: result.riskLevel,
         summary: result.summary,

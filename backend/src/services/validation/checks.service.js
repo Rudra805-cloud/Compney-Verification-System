@@ -1,12 +1,16 @@
-async function checks(hostname,companyName) {
+import getWhoisData from "./whois.service.js";
+import getSslData from "./ssl.service.js";
+
+async function checks(hostname) {
+    // companyName → future: brand matching / linkedin check
+
+     const whoisData=await getWhoisData(hostname);
+     const sslData=await getSslData(hostname);
 
     return {
-        websiteExists: true,
-        sslEnabled: true,
-        contactInfoFound: false,
-        linkedInFound: false,
-        domainAgeValid:false,
-        domainAgeYears: 0
+       whois: whoisData,
+       ssl:sslData
+
     };
 }
 
