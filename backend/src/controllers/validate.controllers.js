@@ -38,14 +38,14 @@ async function companyValidationController(req, res) {
         companyName: result.companyName,
         websiteUrl:originalUrl,
         hostname: hostname,
-        trustScore: result.trustScore,
+        trustScore: result.trustScore.score,
         riskLevel: result.riskLevel,
         summary: result.summary,
         lastValidatedAt: result.lastValidatedAt
       });
     } else {
       company.companyName = result.companyName;
-      company.trustScore = result.trustScore;
+      company.trustScore = result.trustScore.score;
       company.riskLevel = result.riskLevel;
       company.summary = result.summary;
       company.lastValidatedAt = result.lastValidatedAt;
@@ -55,15 +55,8 @@ async function companyValidationController(req, res) {
     await Validation.create({
       userId: userId,
       companyId: company._id,
-      checks: {
-        websiteExists: result.checks.websiteExists,
-        sslEnabled: result.checks.sslEnabled,
-        contactInfoFound: result.checks.contactInfoFound,
-        linkedInFound: result.checks.linkedInFound,
-        domainAgeValid: result.checks.domainAgeValid,
-        domainAgeYears:result.checks.domainAgeYears
-      },
-      trustScore: result.trustScore,
+      checks:result.trustScore.breakdownScore,
+      trustScore: result.trustScore.score,
       riskLevel: result.riskLevel,
       summary: result.summary,
       validatedAt: result.lastValidatedAt,

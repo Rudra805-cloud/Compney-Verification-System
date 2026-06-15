@@ -15,14 +15,7 @@ const validationSchema = new mongoose.Schema({
     required: true
   },
 
-  checks: {
-    websiteExists: Boolean,
-    sslEnabled: Boolean,
-    contactInfoFound: Boolean,
-    linkedInFound: Boolean,
-    domainAgeYears: Number,      
-    domainAgeValid: Boolean      
-  },
+  checks: Object,
 
   trustScore: Number,
 

@@ -14,7 +14,7 @@ async function validationService(companyName, websiteUrl) {
   //get score
   const trustScore=calculateScore(validationChecks);
   //get risk level
-  const riskLevel=getRiskLevel(trustScore);
+  const riskLevel=getRiskLevel(trustScore.score);
     // Temporary summary
   const summary = "Validation completed successfully";
   
