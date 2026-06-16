@@ -12,10 +12,7 @@ async function checks(hostname) {
      const sslData=await getSslData(hostname);
      const websiteReach=await websiteReachable(hostname)
      const scrapeData = await globalscraper(hostname);
-     console.log(scrapeData.contact)
-       console.log(scrapeData.social)
-         console.log(scrapeData.legal)
-           console.log(scrapeData.career)
+
     return {
 
        whois: whoisData,

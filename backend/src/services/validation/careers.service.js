@@ -10,7 +10,6 @@ async function getCareersInfo($, html) {
     $("a").each((i, el) => {
       const href = ($(el).attr("href") || "").toLowerCase();
       const text = ($(el).text() || "").toLowerCase();
-console.log(href, " | ", text);
       if (
         href.includes("career") ||
         href.includes("careers") ||

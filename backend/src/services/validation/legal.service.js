@@ -12,7 +12,7 @@ async function getLegalPages($, html) {
     $("a").each((i, el) => {
       const href = ($(el).attr("href") || "").toLowerCase();
       const text = ($(el).text() || "").toLowerCase();
-      console.log(href, " | ", text);
+     
       // Privacy Policy
       if (
         href.includes("privacy") ||

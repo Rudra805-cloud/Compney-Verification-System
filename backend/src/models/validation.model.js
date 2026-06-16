@@ -14,9 +14,11 @@ const validationSchema = new mongoose.Schema({
     ref: "Company",
     required: true
   },
-
-  checks: Object,
-
+ 
+  appliedChecks: {
+        type: Object,
+        default: {},
+      },
   trustScore: Number,
 
   riskLevel: String,

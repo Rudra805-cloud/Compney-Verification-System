@@ -20,12 +20,18 @@ const companySchema = new mongoose.Schema(
       lowercase:true,
       trim: true
     },
+    appliedChecks: {
+        type: Object,
+        default: {},
+      },
     trustScore: {
       type: Number,
       default: 0,
       min: 0,
       max: 100
     },
+    
+    
 
     riskLevel: {
       type: String,

@@ -23,7 +23,6 @@ async function validationService(companyName, websiteUrl) {
     normalized.companyName,
     validationChecks
   );
-  console.log(summary)
     return {
     companyName: normalized.companyName,
     hostname: updatedUrl.hostname,

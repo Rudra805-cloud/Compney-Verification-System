@@ -18,7 +18,6 @@ async function getContactInfo($,html) {
     $("a").each((i, el) => {
       const href = ($(el).attr("href") || "").toLowerCase();
       const text = ($(el).text() || "").toLowerCase();
-      console.log(href, " | ", text);
       if (href.includes("contact") || text.includes("contact")) {
         contactPageFound = true;
       }

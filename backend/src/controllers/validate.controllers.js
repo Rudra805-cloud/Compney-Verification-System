@@ -4,6 +4,7 @@ import { validationService } from "../services/validation/index.service.js";
 import { normalizeUrl } from "../services/validation/url.service.js";
 
 async function companyValidationController(req, res) {
+ 
   try {
     const userId=req.user.id;
     const {force}=req.query
@@ -39,6 +40,7 @@ async function companyValidationController(req, res) {
         websiteUrl:originalUrl,
         hostname: hostname,
         trustScore: result.trustScore.score,
+        appliedChecks:result.trustScore.breakdownScore,
         riskLevel: result.riskLevel,
         summary: result.summary,
         lastValidatedAt: result.lastValidatedAt
@@ -46,6 +48,7 @@ async function companyValidationController(req, res) {
     } else {
       company.companyName = result.companyName;
       company.trustScore = result.trustScore.score;
+      company.appliedChecks=result.trustScore.breakdownScore,
       company.riskLevel = result.riskLevel;
       company.summary = result.summary;
       company.lastValidatedAt = result.lastValidatedAt;
@@ -55,7 +58,7 @@ async function companyValidationController(req, res) {
     await Validation.create({
       userId: userId,
       companyId: company._id,
-      checks:result.trustScore.breakdownScore,
+      appliedChecks:result.trustScore.breakdownScore,
       trustScore: result.trustScore.score,
       riskLevel: result.riskLevel,
       summary: result.summary,
@@ -64,7 +67,7 @@ async function companyValidationController(req, res) {
     return res.status(200).json({
       success: true,
       message: "validation done sussesfully",
-      data: result
+      data: company
     });
   } catch (error) {
     return res.status(500).json({
