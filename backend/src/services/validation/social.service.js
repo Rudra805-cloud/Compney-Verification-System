@@ -1,17 +1,9 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-async function getSocialPresence(hostname) {
+async function getSocialPresence($, html) {
   try {
-    const response = await axios.get(
-      `https://${hostname}`,
-      {
-        timeout: 10000
-      }
-    );
-
-    const html = response.data;
-    const $ = cheerio.load(html);
+    
 
     let linkedInFound = false;
     let twitterFound = false;

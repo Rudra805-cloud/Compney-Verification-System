@@ -1,13 +1,9 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-async function getContactInfo(hostname) {
+async function getContactInfo($,html) {
   try {
-    const response = await axios.get(`https://${hostname}`, {
-      timeout: 10000,
-    });
-    const html = response.data;
-    const $ = cheerio.load(html);
+
     // Email
     const emailRegex = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
 
@@ -22,7 +18,7 @@ async function getContactInfo(hostname) {
     $("a").each((i, el) => {
       const href = ($(el).attr("href") || "").toLowerCase();
       const text = ($(el).text() || "").toLowerCase();
-
+      console.log(href, " | ", text);
       if (href.includes("contact") || text.includes("contact")) {
         contactPageFound = true;
       }

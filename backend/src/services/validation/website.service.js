@@ -4,9 +4,13 @@ async function websiteReachable(hostname){
        const response = await axios.get(
       `https://${hostname}`,
       {
-        timeout: 10000,
+        timeout: 15000,
         maxRedirects: 5,
-        validateStatus: () => true
+        validateStatus: () => true,
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/137 Safari/537.36"
+        }
       }
     );
 
@@ -21,5 +25,6 @@ async function websiteReachable(hostname){
       statusCode: null
     }
 }
+
 }
 export default websiteReachable;

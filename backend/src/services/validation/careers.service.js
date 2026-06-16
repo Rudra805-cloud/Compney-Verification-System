@@ -1,24 +1,16 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-async function getCareersInfo(hostname) {
+async function getCareersInfo($, html) {
   try {
-    const response = await axios.get(
-      `https://${hostname}`,
-      {
-        timeout: 10000
-      }
-    );
-
-    const html = response.data;
-    const $ = cheerio.load(html);
+    
 
     let careersPageFound = false;
 
     $("a").each((i, el) => {
       const href = ($(el).attr("href") || "").toLowerCase();
       const text = ($(el).text() || "").toLowerCase();
-
+console.log(href, " | ", text);
       if (
         href.includes("career") ||
         href.includes("careers") ||

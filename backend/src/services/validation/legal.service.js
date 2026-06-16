@@ -1,17 +1,9 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-async function getLegalPages(hostname) {
+async function getLegalPages($, html) {
   try {
-    const response = await axios.get(
-      `https://${hostname}`,
-      {
-        timeout: 10000
-      }
-    );
 
-    const html = response.data;
-    const $ = cheerio.load(html);
 
     let privacyPolicyFound = false;
     let termsFound = false;
@@ -20,7 +12,7 @@ async function getLegalPages(hostname) {
     $("a").each((i, el) => {
       const href = ($(el).attr("href") || "").toLowerCase();
       const text = ($(el).text() || "").toLowerCase();
-
+      console.log(href, " | ", text);
       // Privacy Policy
       if (
         href.includes("privacy") ||

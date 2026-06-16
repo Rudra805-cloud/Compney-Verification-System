@@ -1,270 +1,181 @@
-import { checks } from "./checks.service.js";
-
-//handel whoisrules
+// scoring.service.js
 const whoisRules = {
-  registered: {
-    weight: 5,
-    test: (v) => v === true,
-  },
-
-  active: {
-    weight: 5,
-    test: (v) => v === true,
-  },
-
-  domainAgeYears: {
-    weight: 5,
-    test: (v) => v >= 1,
-  },
-
-  expired: {
-    weight: 5,
-    test: (v) => v === false,
-  },
-
-  registrar: {
-    weight: 3,
-    test: (v) => !!v,
-  },
-
-  dnsProvider: {
-    weight: 2,
-    test: (v) => !!v,
-  },
-
-  nameserverCount: {
-    weight: 2,
-    test: (v) => v > 0,
-  },
-
-  dnssec: {
-    weight: 2,
-    test: (v) => v && v !== "unsigned",
-  },
-
-  ownerAddress: {
-    weight: 1,
-    test: (v) => !!v,
-  },
+  registered: { weight: 5, test: (v) => v === true },
+  active: { weight: 5, test: (v) => v === true },
+   domainAgeYears: {
+  weight: 10,
+  test: (v) => {
+    if (v >= 10) return true;
+    if (v >= 5) return 0.7;
+    if (v >= 2) return 0.4;
+    return false;
+  }
+}, 
+  expired: { weight: 5, test: (v) => v === false },
+  registrar: { weight: 3, test: (v) => !!v },
+  dnsProvider: { weight: 2, test: (v) => !!v },
+  nameserverCount: { weight: 2, test: (v) => v > 0 },
+  dnssec: { weight: 2, test: (v) => v && v !== "unsigned" },
+  ownerAddress: { weight: 5, test: (v) => !!v },
 };
-//handel ssl feild;
-const sslRules = {
-  valid: {
-    weight: 10,
-    test: (v) => v === true,
-  },
 
+const sslRules = {
+  valid: { weight: 10, test: (v) => v === true },
   issuer: {
     weight: 5,
-    test: (v) => {
-      const trustedIssuers = [
+    test: (v) =>
+      [
         "let's encrypt",
         "digicert",
         "google trust services",
         "cloudflare",
-      ];
-      test: (v) => trustedIssuers.includes((v || "").toLowerCase());
-    },
+      ].includes((v || "").toLowerCase()),
   },
-
-  bits: {
-    weight: 5,
-    test: (v) => v >= 256,
-  },
-
-  subjectCN: {
-    weight: 5,
-    test: (v) => !!v,
-  },
-
-  subjectAltNames: {
-    weight: 3,
-    test: (v) => !!v,
-  },
-
-  expired: {
-    weight: 10,
-    test: (v) => v === false,
-  },
-
-  expiringSoon: {
-    weight: 5,
-    test: (v) => v === false,
-  },
-
-  hostnameMatch: {
-    weight: 10,
-    test: (v) => v === true,
-  },
-
-  daysUntilExpiry: {
-    weight: 5,
-    test: (v) => typeof v === "number" && v > 30,
-  },
+  bits: { weight: 8, test: (v) => v >= 256 },
+  subjectCN: { weight: 8, test: (v) => !!v },
+  subjectAltNames: { weight: 8, test: (v) => !!v },
+  expired: { weight: 10, test: (v) => v === false },
+  expiringSoon: { weight: 5, test: (v) => v === false },
+  hostnameMatch: { weight: 10, test: (v) => v === true },
+  daysUntilExpiry: { weight: 5, test: (v) => typeof v === "number" && v > 30 },
 };
-//handel website reachable feild
+
 const websiteReachRules = {
-  exists: {
-    weight: 10,
-    test: (v) => v === true,
-  },
-  statusCode: {
-    weight: 10,
-    test: (v) => v >= 200 && v < 500,
-  },
+  exists: { weight: 8, test: (v) => v === true },
+  statusCode: { weight: 8, test: (v) => v >= 200 && v < 500 },
 };
-//contact page reachable feild
+
 const contactRules = {
-  emailFound: {
-    weight: 6,
-    test: (v) => v === true,
-  },
-
-  phoneFound: {
-    weight: 8,
-    test: (v) => v === true,
-  },
-
-  contactPageFound: {
-    weight: 6,
-    test: (v) => v === true,
-  },
+  emailFound: { weight: 6, test: (v) => v === true },
+  phoneFound: { weight: 5, test: (v) => v === true },
+  contactPageFound: { weight: 6, test: (v) => v === true },
 };
-//social link found
+
 const socialRules = {
-  linkedInFound: {
-    weight: 10,
-    test: (v) => v === true,
-  },
-
-  twitterFound: {
-    weight: 5,
-    test: (v) => v === true,
-  },
-
-  facebookFound: {
-    weight: 5,
-    test: (v) => v === true,
-  },
-
-  instagramFound: {
-    weight: 4,
-    test: (v) => v === true,
-  },
-
-  socialLinksCount: {
-    weight: 6,
-    test: (v) => v >= 2,
-  },
+  linkedInFound: { weight: 2, test: (v) => v === true },
+  twitterFound: { weight: 2, test: (v) => v === true },
+  facebookFound: { weight: 2, test: (v) => v === true },
+  instagramFound: { weight: 2, test: (v) => v === true },
+  socialLinksCount: { weight: 2, test: (v) => v >= 2 },
 };
-//legel page rule
+
 const legalRules = {
-  privacyPolicyFound: {
-    weight: 8,
-    test: (v) => v === true,
-  },
-
-  termsFound: {
-    weight: 8,
-    test: (v) => v === true,
-  },
-
-  aboutPageFound: {
-    weight: 6,
-    test: (v) => v === true,
-  },
+  privacyPolicyFound: { weight: 10, test: (v) => v === true },
+  termsFound: { weight: 10, test: (v) => v === true },
+  aboutPageFound: { weight: 10, test: (v) => v === true },
 };
-//carrer page rule
+
 const careerRules = {
-  careersPageFound: {
-    weight: 6,
-    test: (v) => v === true,
-  },
+  careersPageFound: { weight: 10, test: (v) => v === true },
 };
+
+
+// ─── helper: score one section ───────────────────────────────────────────────
+function scoreSection(data, rules) {
+  let earned = 0;
+  let possible = 0;
+
+  for (const [field, rule] of Object.entries(rules)) {
+    const value = data?.[field];
+    possible += rule.weight;
+
+    if (value === null || value === undefined) continue;
+
+    const result = rule.test(value);
+     
+    if (result === true) {
+      earned += rule.weight;
+    } 
+    else if (result === false || result === 0) {
+      earned += 0;
+    } 
+    else if (typeof result === "number") {
+      earned += rule.weight * result; // 🔥 FIX: partial scoring works now
+    }
+  }
+
+  if (possible === 0) return 0;
+  return Math.round((earned / possible) * 100);
+}
+function getConfidence(checks) {
+  let total = 0;
+  let filled = 0;
+
+  const sections = [
+    "whois",
+    "ssl",
+    "websiteReach",
+    "contactInfo",
+    "socialPresence",
+    "legalpages",
+    "careersInfo",
+  ];
+
+  for (const section of sections) {
+    const data = checks?.[section] || {};
+
+    for (const value of Object.values(data)) {
+      total++;
+      if (value !== null && value !== undefined) {
+        filled++;
+      }
+    }
+  }
+
+  if (total === 0) return 0;
+
+  return Math.round((filled / total) * 100);
+}
+
+
 
 function calculateScore(checks) {
-  let whoisScore = 0;
-  let sslScore = 0;
-  let maxScore = 0;
-  let websiteReachScore = 0;
-  let contactScore = 0;
-  let socialScore = 0;
-  let legalScore = 0;
-  let careerScore = 0;
-  //woise score
-  for (const [field, rule] of Object.entries(whoisRules)) {
-    const value = checks.whois?.[field];
-
-    if (rule.test(value)) {
-      whoisScore += rule.weight;
-    }
-    maxScore += rule.weight;
+  // hard block — unreachable site is always Very High risk
+  if (!checks.websiteReach?.exists &&
+   !checks.ssl?.valid &&
+   !checks.whois?.registered) {
+    return {
+      score: 0,
+      breakdownScore: {
+        whoisScore: 0,
+        sslScore: 0,
+        websiteReachScore: 0,
+        contactScore: 0,
+        socialScore: 0,
+        legalScore: 0,
+        careerScore: 0,
+      },
+    };
   }
-  //ssl score
-  for (const [field, rule] of Object.entries(sslRules)) {
-    const value = checks.ssl?.[field];
+  const confidence = getConfidence(checks);
 
-    if (rule.test(value)) {
-      sslScore += rule.weight;
-    }
-    maxScore += rule.weight;
-  }
-  //website reachable score
-  for (const [field, rule] of Object.entries(websiteReachRules)) {
-    const value = checks.wesiteReach?.[field];
+  // score each section independently (0–100)
+  const whoisScore = scoreSection(checks.whois, whoisRules);
+  const sslScore = scoreSection(checks.ssl, sslRules);
+  const websiteReachScore = scoreSection(
+    checks.websiteReach,
+    websiteReachRules,
+  );
+  const contactScore = scoreSection(checks.contactInfo, contactRules);
+  const socialScore = scoreSection(checks.socialPresence, socialRules);
+  const legalScore = scoreSection(checks.legalpages, legalRules);
 
-    if (rule.test(value)) {
-      websiteReachScore += rule.weight;
-    }
-    maxScore += rule.weight;
-  }
-  //contact page score
-  for (const [field, rule] of Object.entries(contactRules)) {
-    const value = checks.contactInfo?.[field];
+  const careerScore = scoreSection(checks.careersInfo, careerRules);
+let score
+score = Math.round(
+  whoisScore        * 0.42 +
+  sslScore          * 0.28 +
+  websiteReachScore * 0.10 +
+  contactScore      * 0.08 +
+  legalScore        * 0.05 +
+  socialScore       * 0.04 +
+  careerScore       * 0.03
+);
 
-    if (rule.test(value)) {
-      contactScore += rule.weight;
-    }
-    maxScore += rule.weight;
-  }
-  //social link score
-  for (const [field, rule] of Object.entries(socialRules)) {
-    const value = checks.socialPresence?.[field];
-
-    if (rule.test(value)) {
-      socialScore += rule.weight;
-    }
-    maxScore += rule.weight;
-  }
-  //legel pages score
-  for (const [field, rule] of Object.entries(legalRules)) {
-    const value = checks.legelpages?.[field];
-
-    if (rule.test(value)) {
-      legalScore += rule.weight;
-    }
-    maxScore += rule.weight;
-  }
-  //carrer page score
-  for (const [field, rule] of Object.entries(careerRules)) {
-    const value = checks.careersInfo?.[field];
-
-    if (rule.test(value)) {
-      careerScore += rule.weight;
-    }
-    maxScore += rule.weight;
-  }
-  const totalscore =
-    whoisScore +
-    sslScore +
-    websiteReachScore +
-    contactScore +
-    socialScore +
-    legalScore +
-    careerScore;
-  const score = (totalscore / maxScore) * 100;
+  score= Math.max(0, Math.min(score, 100));
   return {
     score,
+     confidence,
     breakdownScore: {
       whoisScore,
       sslScore,
@@ -277,6 +188,7 @@ function calculateScore(checks) {
   };
 }
 
+
 function getRiskLevel(score) {
   if (score >= 80) return "Low";
   if (score >= 60) return "Medium";
@@ -284,4 +196,4 @@ function getRiskLevel(score) {
   return "Very High";
 }
 
-export { calculateScore, getRiskLevel };
+export { calculateScore, getRiskLevel }
