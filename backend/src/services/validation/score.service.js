@@ -288,7 +288,7 @@ const hasTrustSignal =
 // trusted old domain handle
 // Suspicious domain
 if (
-  checks.whois?.domainAgeYears < 1.5 &&
+  checks.whois?.domainAgeYears < 1.5 && whoisScore<60 &&
   !hasTrustSignal
 ) {
   score = Math.min(score, 70);
@@ -296,7 +296,8 @@ if (
 
 // Trusted old domain
 if (
-  checks.whois?.domainAgeYears >= 15 &&
+  checks.whois?.domainAgeYears >= 10 &&
+  whoisScore>70 &&
   sslScore > 60 &&
   hasTrustSignal
 ) {
