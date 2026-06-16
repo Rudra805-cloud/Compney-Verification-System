@@ -7,7 +7,7 @@ const validateRouter=Router();
 /**
  * @route /api/validate/?force=true
  * @description run validation engine
- * @access public 
+ * @access private 
  */
 validateRouter.post('/',authMiddleware,companyValidationController);
 
