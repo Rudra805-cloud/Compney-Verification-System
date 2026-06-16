@@ -3,8 +3,6 @@ import getSslData from "./ssl.service.js";
 import websiteReachable from "./website.service.js";
 import getContactInfo from "./contact.service.js";
 import getSocialPresence from "./social.service.js";
-import getLegalPages from "./legal.service.js";
-import getCareersInfo from "./careers.service.js";
 import globalscraper from "./scraper.service.js";
 async function checks(hostname) {
      
