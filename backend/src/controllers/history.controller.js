@@ -1,5 +1,3 @@
-//kya chiye
-//histroy model
 import Validation from "../models/validation.model.js";
 
 /**
