@@ -65,6 +65,13 @@ async function handelUserRegisterController(req, res) {
 }
 
 
+/**
+ * @name handelUserLoginController
+ * @description Handle user login
+ * @access public
+ */
+
+
 async function handelUserLoginController(req, res) {
   try {
     const { email, password } = req.body;
@@ -120,7 +127,7 @@ async function handelUserLoginController(req, res) {
 /**
  * @name handelProfileController
  * @description Handle user profile view ,user can view profile easily
- * @access public
+ * @access protected
  */
 
 async function handelProfileController(req, res) {

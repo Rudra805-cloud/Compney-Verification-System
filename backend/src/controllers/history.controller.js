@@ -1,7 +1,13 @@
 //kya chiye
 //histroy model
 import Validation from "../models/validation.model.js";
-async function historyController(req, res) {
+
+/**
+ * @name getHistoryController
+ * @description history side bar for user to see his past search
+ * @access protected
+ */
+async function getHistoryController(req, res) {
   try {
     const userId = req.user.id;
     // const history = await Validation.findOne({
@@ -13,11 +19,8 @@ async function historyController(req, res) {
       .sort({ validatedAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
-      .select("-userId -__v")
-      .populate(
-        "companyId",
-        "companyName hostname websiteUrl trustScore riskLevel",
-      );
+      .select("_id validatedAt")
+      .populate("companyId", "companyName hostname");
     if (history.length === 0) {
       return res.status(404).json({
         success: false,
@@ -41,4 +44,32 @@ async function historyController(req, res) {
     });
   }
 }
-export { historyController };
+/**
+ * @name getHistoryDetailsController
+ * @description get complete deatil of a particular history
+ * @access protected
+ */
+async function getHistoryDetailsController(req, res) {
+  try {
+    const validationId = req.params.validationId;
+    const detailedHistory = await Validation.findOne({
+      _id: validationId,
+    }).populate(
+    "companyId",
+    "companyName hostname websiteUrl"
+  );
+  return res.status(200).json({
+      success: true,
+      message: "history fecth sussesfully",
+      data: detailedHistory,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
+
+export { getHistoryController,getHistoryDetailsController};
