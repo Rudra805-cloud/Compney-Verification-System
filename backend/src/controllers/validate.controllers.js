@@ -4,31 +4,39 @@ import { validationService } from "../services/validation/index.service.js";
 import { normalizeUrl } from "../services/validation/url.service.js";
 
 async function companyValidationController(req, res) {
- 
   try {
-    const userId=req.user.id;
-    const {force}=req.query
+    const userId = req.user.id;
+    const { force } = req.query;
     const { companyName, websiteUrl } = req.body;
     //check inputs
     if (!companyName || !websiteUrl) {
       return res.status(400).json({
         success: false,
-        message: "companyName and domain are required"
+        message: "companyName and domain are required",
       });
     }
 
     //add checing to reduse no of hits of api
-   const { hostname,originalUrl } = normalizeUrl(websiteUrl);
+    const { hostname, originalUrl } = normalizeUrl(websiteUrl);
     let company = await Company.findOne({
-      hostname: hostname
+      hostname: hostname,
     });
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-     
+
     if (company && company.lastValidatedAt > oneDayAgo && force !== "true") {
+      await Validation.create({
+        userId,
+        companyId: company._id,
+        appliedChecks: company.appliedChecks,
+        trustScore: company.trustScore,
+        riskLevel: company.riskLevel,
+        summary: company.summary,
+        validatedAt: company.lastValidatedAt,
+      });
       return res.status(200).json({
         success: true,
         cached: true,
-        data: company
+        data: company,
       });
     }
     //run validation engine
@@ -37,19 +45,19 @@ async function companyValidationController(req, res) {
     if (!company) {
       company = await Company.create({
         companyName: result.companyName,
-        websiteUrl:originalUrl,
+        websiteUrl: originalUrl,
         hostname: hostname,
         trustScore: result.trustScore.score,
-        appliedChecks:result.trustScore.breakdownScore,
+        appliedChecks: result.trustScore.breakdownScore,
         riskLevel: result.riskLevel,
         summary: result.summary,
-        lastValidatedAt: result.lastValidatedAt
+        lastValidatedAt: result.lastValidatedAt,
       });
     } else {
       company.companyName = result.companyName;
       company.trustScore = result.trustScore.score;
-      company.appliedChecks=result.trustScore.breakdownScore,
-      company.riskLevel = result.riskLevel;
+      ((company.appliedChecks = result.trustScore.breakdownScore),
+        (company.riskLevel = result.riskLevel));
       company.summary = result.summary;
       company.lastValidatedAt = result.lastValidatedAt;
       await company.save();
@@ -58,7 +66,7 @@ async function companyValidationController(req, res) {
     await Validation.create({
       userId: userId,
       companyId: company._id,
-      appliedChecks:result.trustScore.breakdownScore,
+      appliedChecks: result.trustScore.breakdownScore,
       trustScore: result.trustScore.score,
       riskLevel: result.riskLevel,
       summary: result.summary,
@@ -67,12 +75,12 @@ async function companyValidationController(req, res) {
     return res.status(200).json({
       success: true,
       message: "validation done sussesfully",
-      data: company
+      data: company,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 }

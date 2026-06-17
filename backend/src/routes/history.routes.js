@@ -4,7 +4,7 @@ import { historyController } from "../controllers/history.controller.js";
 const historyRouter=Router();
 
 /**
- * @route /api/validate/?force=true
+ * @route GET /history?page=2&limit=20
  * @description run validation engine
  * @access private 
  */
