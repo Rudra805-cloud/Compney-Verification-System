@@ -10,6 +10,8 @@ import {
   FileText,
   Briefcase,
   ArrowRight,
+  Sun,
+  Moon,
   CheckCircle2,
   XCircle,
   RotateCcw,
@@ -111,6 +113,7 @@ function CompanyValidatorLanding() {
   
   const [cycle, setCycle] = useState(0);
   const [scrolled, setScrolled] = useState(false);
+  const [theme, setTheme] = useState("dark");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -121,6 +124,27 @@ function CompanyValidatorLanding() {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved === "light" || saved === "dark") {
+      setTheme(saved);
+      document.documentElement.classList.toggle("light", saved === "light");
+    } else {
+      document.documentElement.classList.toggle("light", false);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("theme", theme);
+    } catch (e) {}
+    document.documentElement.classList.toggle("light", theme === "light");
+  }, [theme]);
+
+  function toggleTheme() {
+    setTheme((t) => (t === "dark" ? "light" : "dark"));
+  }
   const [statuses, setStatuses] = useState(
     Object.fromEntries(SIGNAL_DEFS.map((s) => [s.key, "idle"])),
   );
@@ -172,7 +196,7 @@ function CompanyValidatorLanding() {
   const demo = DEMOS[cycle];
 
   return (
-    <div className="min-h-screen w-full bg-neutral-950 text-neutral-200 font-sans relative overflow-x-hidden" style={{ animation: 'fadeIn 0.8s ease-out' }}>
+    <div className={`min-h-screen w-full ${theme === 'light' ? 'bg-white text-neutral-900' : 'bg-neutral-950 text-neutral-200'} font-sans relative overflow-x-hidden`} style={{ animation: 'fadeIn 0.8s ease-out' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
         .font-display { font-family: 'Space Grotesk', sans-serif; }
@@ -231,10 +255,9 @@ function CompanyValidatorLanding() {
           px-5
           py-2.5
           rounded-full
-          bg-neutral-900/60
           backdrop-blur-xl
-          border border-neutral-700/50
           shadow-lg
+          ${theme === 'light' ? 'bg-white/80 border border-neutral-200' : 'bg-neutral-900/60 border border-neutral-700/50'}
         `
         : `
           top-6
@@ -257,11 +280,25 @@ function CompanyValidatorLanding() {
           <div className="w-9 h-9 rounded-lg bg-orange-500 flex items-center justify-center">
             <ShieldCheck className="w-5 h-5 text-neutral-950" />
           </div>
-          <span className="font-display font-bold text-xl text-white">
+          <span className={`font-display font-bold text-xl ${theme === 'light' ? 'text-neutral-900' : 'text-white'}`}>
             Veris
           </span>
         </div>
-        <button className={`
+        <div className="flex items-center gap-3">
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            className={`inline-flex items-center justify-center w-9 h-9 rounded-full transition-all duration-200 ${theme === 'light' ? 'bg-neutral-200/80 hover:bg-neutral-300 text-orange-500' : 'bg-neutral-800/40 hover:bg-neutral-800/60 text-yellow-300'}`}
+            title="Toggle light / dark"
+          >
+            {theme === "dark" ? (
+              <Sun className="w-4 h-4" />
+            ) : (
+              <Moon className="w-4 h-4" />
+            )}
+          </button>
+
+          <button className={`
     inline-flex items-center gap-1.5 rounded-full
     bg-orange-500 hover:bg-orange-400
     transition-all duration-300 ease-out
@@ -273,12 +310,13 @@ function CompanyValidatorLanding() {
         : "px-5 py-2.5 text-sm"
     }
   `}>
-          Scan a Company <ArrowRight className="w-4 h-4" />
-        </button>
+            Scan a Company <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
       </header>
 
       {/* Ticker */}
-      <div className="relative z-10 border-b border-neutral-800 bg-neutral-900/80">
+      <div className={`relative z-10 ${theme === 'light' ? 'border-b border-neutral-200 bg-white/90' : 'border-b border-neutral-800 bg-neutral-900/80'}`}>
         <div className="flex items-center gap-4 px-4 sm:px-8 py-2 text-xs">
           <span className="hidden sm:inline-flex items-center gap-1.5 font-mono-data text-orange-400 whitespace-nowrap">
             <Sparkles className="w-3.5 h-3.5" /> LIVE FEED
@@ -306,18 +344,18 @@ function CompanyValidatorLanding() {
       </div>
 
       {/* Hero */}
-    <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 pt-32 pb-24 grid md:grid-cols-2 gap-16 items-center">
+    <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 pt-24 pb-24 grid md:grid-cols-2 gap-16 items-center">
         <div className="space-y-7">
-          <div className="inline-flex items-center gap-2 rounded-full border border-neutral-800 bg-neutral-900 px-3.5 py-1.5 text-xs font-mono-data text-orange-300 uppercase tracking-wide animate-slideInDown" style={{ animationDelay: '0.1s' }}>
+          <div className={`inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-mono-data uppercase tracking-wide animate-slideInDown ${theme === 'light' ? 'border border-neutral-200 bg-neutral-100 text-orange-600' : 'border border-neutral-800 bg-neutral-900 text-orange-300'}`} style={{ animationDelay: '0.1s' }}>
             <Search className="w-3.5 h-3.5" /> Domain &amp; Company Trust Engine
           </div>
 
-          <h1 className="font-display font-bold text-4xl sm:text-5xl leading-[1.1] text-white animate-slideInDown" style={{ animationDelay: '0.2s' }}>
+          <h1 className={`font-display font-bold text-4xl sm:text-5xl leading-[1.1] animate-slideInDown ${theme === 'light' ? 'text-neutral-900' : 'text-white'}`} style={{ animationDelay: '0.2s' }}>
             Know who's <span className="text-orange-400">actually</span> on the
             other side of that offer.
           </h1>
 
-          <p className="text-neutral-400 text-base sm:text-lg leading-relaxed max-w-md animate-slideInDown" style={{ animationDelay: '0.3s' }}>
+          <p className={`text-base sm:text-lg leading-relaxed max-w-md animate-slideInDown ${theme === 'light' ? 'text-neutral-700' : 'text-neutral-400'}`} style={{ animationDelay: '0.3s' }}>
             Run WHOIS, SSL, reachability and legitimacy checks on any company in
             seconds, before you apply, freelance, or send a single rupee.
           </p>
@@ -326,7 +364,7 @@ function CompanyValidatorLanding() {
             <button className="inline-flex items-center gap-2 rounded-full bg-orange-500 hover:bg-orange-400 transition-smooth-fast text-neutral-950 font-semibold px-6 py-3 hover:scale-105 hover:shadow-lg hover:shadow-orange-500/50">
               Scan a Company <ArrowRight className="w-4 h-4" />
             </button>
-            <button className="inline-flex items-center gap-2 rounded-full border border-neutral-700 hover:border-neutral-500 transition-smooth-fast text-neutral-200 font-semibold px-6 py-3 hover:bg-neutral-900/40 hover:scale-105">
+            <button className={`inline-flex items-center gap-2 rounded-full border transition-smooth-fast font-semibold px-6 py-3 hover:scale-105 ${theme === 'light' ? 'border-neutral-300 text-neutral-700 hover:bg-neutral-50' : 'border-neutral-700 text-neutral-200 hover:bg-neutral-900/40'}`}>
               See a sample report
             </button>
           </div>
@@ -334,7 +372,7 @@ function CompanyValidatorLanding() {
           <div className="space-y-4 pt-4 animate-slideInUp" style={{ animationDelay: '0.5s' }}>
             <div className="flex gap-3 hover:translate-x-1 transition-smooth-fast">
               <ShieldCheck className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
-              <p className="text-sm text-neutral-400">
+              <p className={`text-sm ${theme === 'light' ? 'text-neutral-700' : 'text-neutral-400'}`}>
                 <span className="text-neutral-200 font-medium">
                   Trust Score:
                 </span>{" "}
@@ -343,7 +381,7 @@ function CompanyValidatorLanding() {
             </div>
             <div className="flex gap-3 hover:translate-x-1 transition-smooth-fast">
               <Users className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
-              <p className="text-sm text-neutral-400">
+              <p className={`text-sm ${theme === 'light' ? 'text-neutral-700' : 'text-neutral-400'}`}>
                 <span className="text-neutral-200 font-medium">
                   Built for job seekers &amp; freelancers:
                 </span>{" "}
@@ -352,7 +390,7 @@ function CompanyValidatorLanding() {
             </div>
             <div className="flex gap-3 hover:translate-x-1 transition-smooth-fast">
               <RotateCcw className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
-              <p className="text-sm text-neutral-400">
+              <p className={`text-sm ${theme === 'light' ? 'text-neutral-700' : 'text-neutral-400'}`}>
                 <span className="text-neutral-200 font-medium">
                   History &amp; re-checks:
                 </span>{" "}
@@ -364,56 +402,34 @@ function CompanyValidatorLanding() {
         </div>
 
         {/* Scanner mockup */}
-        <div className="relative flex justify-center md:justify-end animate-scaleIn" style={{ animationDelay: '0.6s' }}>
-          <div className="hidden lg:flex absolute -top-6 -right-2 items-center gap-2.5 rounded-xl border border-neutral-800 bg-neutral-900/95 px-3.5 py-2.5 shadow-xl shadow-black/40 transition-smooth hover:shadow-cyan-400/40 hover:shadow-xl">
-            <div className="w-7 h-7 rounded-full bg-cyan-400/15 flex items-center justify-center">
-              <ShieldCheck className="w-4 h-4 text-cyan-400" />
-            </div>
-            <div className="text-xs">
-              <p className="font-mono-data text-neutral-200">razorpay.com</p>
-              <p className="text-cyan-400 font-medium">Verified · 91% Trust</p>
-            </div>
-          </div>
-
-          <div className="hidden lg:flex absolute bottom-6 -left-10 items-center gap-2.5 rounded-xl border border-neutral-800 bg-neutral-900/95 px-3.5 py-2.5 shadow-xl shadow-black/40 transition-smooth hover:shadow-red-400/40 hover:shadow-xl">
-            <div className="w-7 h-7 rounded-full bg-red-400/15 flex items-center justify-center">
-              <XCircle className="w-4 h-4 text-red-400" />
-            </div>
-            <div className="text-xs">
-              <p className="font-mono-data text-neutral-200">
-                quick-payout-jobs.net
-              </p>
-              <p className="text-red-400 font-medium">High Risk · 27% Trust</p>
-            </div>
-          </div>
-
-          <div className="relative w-full max-w-sm rounded-2xl border border-neutral-800 bg-neutral-900/90 backdrop-blur p-5 overflow-hidden">
+        <div className="relative flex justify-center animate-scaleIn self-center md:self-start" style={{ animationDelay: '0.6s' }}>
+          <div className={`relative w-full max-w-sm rounded-2xl border p-5 overflow-hidden transition-all duration-300 hover:shadow-lg ${theme === 'light' ? 'border-neutral-200 bg-white shadow-md' : 'border-neutral-700 bg-neutral-900/80 shadow-xl shadow-black/30'}`}>
             {phase === "scanning" && (
               <div className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent scan-beam" />
             )}
 
-            <div className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2 mb-4">
-              <Search className="w-4 h-4 text-neutral-500" />
-              <span className="font-mono-data text-sm text-neutral-300">
+            <div className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 mb-5 transition-all ${theme === 'light' ? 'border-neutral-300 bg-neutral-50 text-neutral-800' : 'border-neutral-700 bg-neutral-950/50'}`}>
+              <Search className={`w-4 h-4 ${theme === 'light' ? 'text-neutral-600' : 'text-neutral-500'}`} />
+              <span className={`font-mono-data text-sm ${theme === 'light' ? 'text-neutral-700' : 'text-neutral-300'}`}>
                 {demo.domain}
               </span>
-              <span className="ml-auto text-[10px] font-mono-data uppercase tracking-wide text-neutral-500">
+              <span className={`ml-auto text-[10px] font-mono-data uppercase tracking-wide ${theme === 'light' ? 'text-neutral-500' : 'text-neutral-500'}`}>
                 {phase === "scanning" ? "Scanning..." : "Complete"}
               </span>
             </div>
 
-            <div className="space-y-2.5">
+            <div className="space-y-3 px-0.5">
               {SIGNAL_DEFS.map(({ key, label, icon: Icon }) => {
                 const st = statuses[key];
                 return (
-                  <div key={key} className="flex items-center gap-2.5 text-sm">
-                    <Icon className="w-4 h-4 text-neutral-500 shrink-0" />
-                    <span className="text-neutral-400 flex-1">{label}</span>
+                  <div key={key} className="flex items-center gap-2.5 text-sm transition-colors">
+                    <Icon className={`w-4 h-4 shrink-0 ${theme === 'light' ? 'text-neutral-700' : 'text-neutral-500'}`} />
+                    <span className={`${theme === 'light' ? 'text-neutral-700' : 'text-neutral-400'} flex-1`}>{label}</span>
                     {st === "idle" && (
-                      <span className="w-3.5 h-3.5 rounded-full border border-neutral-700" />
+                      <span className={`w-3.5 h-3.5 rounded-full border ${theme === 'light' ? 'border-neutral-400' : 'border-neutral-700'}`} />
                     )}
                     {st === "checking" && (
-                      <span className="w-3.5 h-3.5 rounded-full border-2 border-neutral-700 border-t-orange-400 animate-spin" />
+                      <span className={`w-3.5 h-3.5 rounded-full border-2 border-t-orange-400 animate-spin ${theme === 'light' ? 'border-neutral-300' : 'border-neutral-700'}`} />
                     )}
                     {st === "pass" && (
                       <CheckCircle2 className="w-4 h-4 text-cyan-400" />
@@ -426,23 +442,23 @@ function CompanyValidatorLanding() {
               })}
             </div>
 
-            <div className="mt-5 pt-4 border-t border-neutral-800 flex items-center justify-between">
+            <div className={`mt-6 pt-5 border-t flex items-center justify-between ${theme === 'light' ? 'border-neutral-300' : 'border-neutral-700'}`}>
               <div>
-                <p className="text-[10px] uppercase tracking-wide text-neutral-500 font-mono-data">
+                <p className={`text-[10px] uppercase tracking-wide font-mono-data ${theme === 'light' ? 'text-neutral-600' : 'text-neutral-500'}`}>
                   Trust Score
                 </p>
-                <p className="font-mono-data font-semibold text-3xl text-white">
+                <p className={`font-mono-data font-semibold text-3xl ${theme === 'light' ? 'text-neutral-900' : 'text-white'}`}>
                   {score}
-                  <span className="text-lg text-neutral-500">%</span>
+                  <span className={`text-lg ${theme === 'light' ? 'text-neutral-600' : 'text-neutral-500'}`}>%</span>
                 </p>
               </div>
               <span
-                className={`text-xs font-medium rounded-full border px-3 py-1 ${demo.riskClass}`}
+                className={`text-xs font-medium rounded-full border px-3 py-1.5 transition-colors ${demo.riskClass}`}
               >
                 {demo.risk}
               </span>
             </div>
-            <div className="mt-3 h-1.5 w-full rounded-full bg-neutral-800 overflow-hidden">
+            <div className={`mt-4 h-1.5 w-full rounded-full overflow-hidden ${theme === 'light' ? 'bg-neutral-200' : 'bg-neutral-800'}`}>
               <div
                 className={`h-full bg-gradient-to-r ${demo.barClass} transition-smooth`}
                 style={{ width: `${score}%` }}
@@ -477,7 +493,7 @@ function CompanyValidatorLanding() {
           ].map((step, idx) => (
             <div
               key={step.n}
-              className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-6 transition-smooth hover:border-neutral-700 hover:bg-neutral-900/80 hover:shadow-lg"
+              className={`rounded-xl p-6 transition-smooth hover:shadow-lg ${theme === 'light' ? 'border border-neutral-200 bg-white' : 'border border-neutral-800 bg-neutral-900/60 hover:border-neutral-700 hover:bg-neutral-900/80'}`}
               style={{
                 animation: 'slideInUp 0.6s ease-out forwards',
                 animationDelay: `${0.4 + idx * 0.1}s`,
@@ -487,10 +503,10 @@ function CompanyValidatorLanding() {
               <span className="font-mono-data text-orange-400 text-sm">
                 {step.n}
               </span>
-              <h3 className="font-display font-semibold text-lg text-white mt-2">
+              <h3 className={`font-display font-semibold text-lg mt-2 ${theme === 'light' ? 'text-neutral-900' : 'text-white'}`}>
                 {step.title}
               </h3>
-              <p className="text-sm text-neutral-400 mt-2 leading-relaxed">
+              <p className={`${theme === 'light' ? 'text-neutral-700' : 'text-sm text-neutral-400'} mt-2 leading-relaxed`}>
                 {step.text}
               </p>
             </div>
@@ -505,10 +521,10 @@ function CompanyValidatorLanding() {
       >
         <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
           <div className="animate-slideInDown" style={{ animationDelay: '0.3s' }}>
-            <h2 className="font-display font-bold text-2xl sm:text-3xl text-white">
+            <h2 className={`font-display font-bold text-2xl sm:text-3xl ${theme === 'light' ? 'text-neutral-900' : 'text-white'}`}>
               What we check
             </h2>
-            <p className="text-neutral-400 text-sm mt-1">
+            <p className={`${theme === 'light' ? 'text-neutral-700' : 'text-neutral-400'} text-sm mt-1`}>
               Every signal feeds a single, normalized trust score.
             </p>
           </div>
@@ -529,7 +545,7 @@ function CompanyValidatorLanding() {
           {SIGNAL_DEFS.map(({ key, label, icon: Icon, desc }, idx) => (
             <div
               key={key}
-              className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-5 transition-smooth hover:border-orange-500/50 hover:bg-neutral-900/80 hover:shadow-lg hover:shadow-orange-500/20"
+              className={`rounded-xl p-5 transition-smooth hover:shadow-lg ${theme === 'light' ? 'border border-neutral-200 bg-white' : 'border border-neutral-800 bg-neutral-900/60 hover:border-orange-500/50 hover:bg-neutral-900/80 hover:shadow-orange-500/20'}`}
               style={{
                 animation: 'slideInUp 0.6s ease-out forwards',
                 animationDelay: `${0.5 + idx * 0.08}s`,
@@ -539,8 +555,8 @@ function CompanyValidatorLanding() {
               <div className="w-9 h-9 rounded-lg bg-orange-500/10 flex items-center justify-center mb-3">
                 <Icon className="w-4.5 h-4.5 text-orange-400" />
               </div>
-              <h3 className="font-medium text-neutral-100 text-sm">{label}</h3>
-              <p className="text-xs text-neutral-500 mt-1.5 leading-relaxed">
+              <h3 className={`font-medium text-sm ${theme === 'light' ? 'text-neutral-900' : 'text-neutral-100'}`}>{label}</h3>
+              <p className={`${theme === 'light' ? 'text-neutral-700' : 'text-xs text-neutral-500'} mt-1.5 leading-relaxed`}>
                 {desc}
               </p>
             </div>
@@ -549,16 +565,16 @@ function CompanyValidatorLanding() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-neutral-800 max-w-7xl mx-auto px-4 sm:px-8 py-8 flex flex-wrap items-center justify-between gap-4 animate-fadeIn" style={{ animationDelay: '1s' }}>
+      <footer className={`relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-8 flex flex-wrap items-center justify-between gap-4 animate-fadeIn ${theme === 'light' ? 'border-t border-neutral-200 bg-white' : 'border-t border-neutral-800'}`} style={{ animationDelay: '1s' }}>
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 rounded bg-orange-500 flex items-center justify-center">
-            <ShieldCheck className="w-3.5 h-3.5 text-neutral-950" />
+            <ShieldCheck className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-neutral-900' : 'text-neutral-950'}`} />
           </div>
-          <span className="font-display font-semibold text-sm text-neutral-300">
+          <span className={`font-display font-semibold text-sm ${theme === 'light' ? 'text-neutral-800' : 'text-neutral-300'}`}>
             Veris
           </span>
         </div>
-        <p className="text-xs text-neutral-500">
+        <p className={`${theme === 'light' ? 'text-neutral-600' : 'text-xs text-neutral-500'}`}>
           © 2026 Veris. Built for people who'd rather verify than find out the
           hard way.
         </p>
