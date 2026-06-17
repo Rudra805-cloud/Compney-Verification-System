@@ -4,13 +4,13 @@ import { checks } from "./checks.service.js";
 import {calculateScore,getRiskLevel} from "./score.service.js"
 import getSummary from "./summary.service.js";
 
-async function validationService(companyName, websiteUrl) {
+async function validationService(websiteUrl) {
     //url and website noremalisation 
- const normalized=await normalizeInput(companyName, websiteUrl);
+ const normalized=await normalizeInput(websiteUrl);
    //website url proper website devives 
  const updatedUrl=await normalizeUrl(normalized.websiteUrl);
   // apply cheks
-  const validationChecks=await checks(updatedUrl.hostname,normalized.companyName);
+  const validationChecks=await checks(updatedUrl.hostname);
   //get score
   const trustScore=await calculateScore(validationChecks);
   //get risk level
@@ -20,11 +20,9 @@ async function validationService(companyName, websiteUrl) {
     trustScore,
     riskLevel,
     updatedUrl.hostname,
-    normalized.companyName,
     validationChecks
   );
     return {
-    companyName: normalized.companyName,
     hostname: updatedUrl.hostname,
     websiteUrl:updatedUrl.originalUrl,
     checks: validationChecks,

@@ -1,14 +1,9 @@
 
-const normalizeInput=(companyName, websiteUrl)=>{
-   if (!companyName || typeof companyName !== "string") {
-    throw new Error("Invalid company name");
-  }
-
+const normalizeInput=(websiteUrl)=>{
   if (!websiteUrl || typeof websiteUrl !== "string") {
     throw new Error("Invalid website URL");
   }
  return {
-    companyName: companyName.trim().toLowerCase(),
 
     websiteUrl: websiteUrl
       .trim()

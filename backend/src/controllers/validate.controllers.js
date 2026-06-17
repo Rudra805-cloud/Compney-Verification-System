@@ -5,46 +5,56 @@ import { normalizeUrl } from "../services/validation/url.service.js";
 
 async function companyValidationController(req, res) {
   try {
-    const userId = req.user.id;
-    const { force } = req.query;
-    const { companyName, websiteUrl } = req.body;
-    //check inputs
-    if (!companyName || !websiteUrl) {
-      return res.status(400).json({
-        success: false,
-        message: "companyName and domain are required",
-      });
-    }
+      const userId = req.user.id;
+  const { websiteUrl } = req.body;
 
-    //add checing to reduse no of hits of api
-    const { hostname, originalUrl } = normalizeUrl(websiteUrl);
-    let company = await Company.findOne({
-      hostname: hostname,
+  if (!websiteUrl) {
+    return res.status(400).json({
+      success: false,
+      message: "website required are required",
     });
-    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  }
 
-    if (company && company.lastValidatedAt > oneDayAgo && force !== "true") {
-      await Validation.create({
-        userId,
-        companyId: company._id,
-        appliedChecks: company.appliedChecks,
-        trustScore: company.trustScore,
-        riskLevel: company.riskLevel,
-        summary: company.summary,
-        validatedAt: company.lastValidatedAt,
-      });
-      return res.status(200).json({
-        success: true,
-        cached: true,
-        data: company,
-      });
-    }
+  const { force: forceQuery } = req.query;
+  const force = forceQuery === "true";
+
+  const { hostname, originalUrl } = normalizeUrl(websiteUrl);
+
+  let company = await Company.findOne({ hostname });
+
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const isStale = !company || company.lastValidatedAt < oneDayAgo;
+
+  // CACHE RETURN
+  if (company && !force && !isStale) {
+    return res.json({
+      success: true,
+      cached: true,
+      data: company,
+    });
+  }
+
+    // if (company && company.lastValidatedAt < oneDayAgo && force !== "true") {
+    //   await Validation.create({
+    //     userId,
+    //     companyId: company._id,
+    //     appliedChecks: company.appliedChecks,
+    //     trustScore: company.trustScore,
+    //     riskLevel: company.riskLevel,
+    //     summary: company.summary,
+    //     validatedAt: company.lastValidatedAt,
+    //   });
+    //   return res.status(200).json({
+    //     success: true,
+    //     cached: true,
+    //     data: company,
+    //   });
+    // }
     //run validation engine
-    const result = await validationService(companyName, hostname);
+    const result = await validationService(hostname);
 
     if (!company) {
       company = await Company.create({
-        companyName: result.companyName,
         websiteUrl: originalUrl,
         hostname: hostname,
         trustScore: result.trustScore.score,
@@ -54,10 +64,9 @@ async function companyValidationController(req, res) {
         lastValidatedAt: result.lastValidatedAt,
       });
     } else {
-      company.companyName = result.companyName;
       company.trustScore = result.trustScore.score;
-      ((company.appliedChecks = result.trustScore.breakdownScore),
-        (company.riskLevel = result.riskLevel));
+      company.appliedChecks = result.trustScore.breakdownScore;
+      company.riskLevel = result.riskLevel;
       company.summary = result.summary;
       company.lastValidatedAt = result.lastValidatedAt;
       await company.save();

@@ -18,7 +18,7 @@ async function getHistoryController(req, res) {
       .skip((page - 1) * limit)
       .limit(limit)
       .select("_id validatedAt")
-      .populate("companyId", "companyName hostname");
+      .populate("companyId", "hostname");
     if (history.length === 0) {
       return res.status(404).json({
         success: false,
@@ -54,7 +54,7 @@ async function getHistoryDetailsController(req, res) {
       _id: validationId,
     }).populate(
     "companyId",
-    "companyName hostname websiteUrl"
+    "hostname websiteUrl"
   );
   return res.status(200).json({
       success: true,
