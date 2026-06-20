@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import LoginPage from "./Login.page";
 import {
   ShieldCheck,
   Search,
@@ -18,6 +19,8 @@ import {
   Users,
   Sparkles,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -110,6 +113,7 @@ const TICKER_ITEMS = [
 ];
 
 function CompanyValidatorLanding() {
+  const navigate = useNavigate();
   
   const [cycle, setCycle] = useState(0);
   const [scrolled, setScrolled] = useState(false);
@@ -309,7 +313,8 @@ function CompanyValidatorLanding() {
         ? "px-4 py-2 text-sm"
         : "px-5 py-2.5 text-sm"
     }
-  `}>
+  `} onClick={() => navigate("/login")}
+>
             Scan a Company <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -361,7 +366,7 @@ function CompanyValidatorLanding() {
           </p>
 
           <div className="flex flex-wrap gap-3 pt-1 animate-slideInDown" style={{ animationDelay: '0.4s' }}>
-            <button className="inline-flex items-center gap-2 rounded-full bg-orange-500 hover:bg-orange-400 transition-smooth-fast text-neutral-950 font-semibold px-6 py-3 hover:scale-105 hover:shadow-lg hover:shadow-orange-500/50">
+            <button className="inline-flex items-center gap-2 rounded-full bg-orange-500 hover:bg-orange-400 transition-smooth-fast text-neutral-950 font-semibold px-6 py-3 hover:scale-105 hover:shadow-lg hover:shadow-orange-500/50" onClick={() => navigate("/login")}>
               Scan a Company <ArrowRight className="w-4 h-4" />
             </button>
             <button className={`inline-flex items-center gap-2 rounded-full border transition-smooth-fast font-semibold px-6 py-3 hover:scale-105 ${theme === 'light' ? 'border-neutral-300 text-neutral-700 hover:bg-neutral-50' : 'border-neutral-700 text-neutral-200 hover:bg-neutral-900/40'}`}>
@@ -373,7 +378,7 @@ function CompanyValidatorLanding() {
             <div className="flex gap-3 hover:translate-x-1 transition-smooth-fast">
               <ShieldCheck className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
               <p className={`text-sm ${theme === 'light' ? 'text-neutral-700' : 'text-neutral-400'}`}>
-                <span className="text-neutral-200 font-medium">
+                <span className={`text-sm ${theme === 'light' ? 'text-neutral-700' : 'text-neutral-400'} font-medium`}>
                   Trust Score:
                 </span>{" "}
                 seven weighted signals rolled into one transparent number.
@@ -382,7 +387,7 @@ function CompanyValidatorLanding() {
             <div className="flex gap-3 hover:translate-x-1 transition-smooth-fast">
               <Users className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
               <p className={`text-sm ${theme === 'light' ? 'text-neutral-700' : 'text-neutral-400'}`}>
-                <span className="text-neutral-200 font-medium">
+                <span className={`text-sm ${theme === 'light' ? 'text-neutral-700' : 'text-neutral-400'} font-medium`}>
                   Built for job seekers &amp; freelancers:
                 </span>{" "}
                 catch fake offers and shady clients before you commit.
@@ -391,7 +396,7 @@ function CompanyValidatorLanding() {
             <div className="flex gap-3 hover:translate-x-1 transition-smooth-fast">
               <RotateCcw className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
               <p className={`text-sm ${theme === 'light' ? 'text-neutral-700' : 'text-neutral-400'}`}>
-                <span className="text-neutral-200 font-medium">
+                <span className={`text-sm ${theme === 'light' ? 'text-neutral-700' : 'text-neutral-400'} font-medium`}>
                   History &amp; re-checks:
                 </span>{" "}
                 every scan saved, with one-click re-validation when something
