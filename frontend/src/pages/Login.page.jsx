@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { ShieldCheck, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { loginUser } from "../api/auth.api";
+import Dashboard from "./Dashboard.page";
+import { useNavigate } from "react-router-dom";
 function GoogleIcon({ className }) {
   return (
     <svg className={className} viewBox="0 0 48 48">
@@ -53,10 +56,11 @@ function CircuitPattern({ className, flip = false }) {
 }
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
   e.preventDefault();
 
   setError("");
@@ -65,16 +69,36 @@ export default function LoginPage() {
     setError("Email and password are required");
     return;
   }
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-if (!emailRegex.test(email)) {
+if (!emailRegex.test(email.trim())) {
   setError("Please enter a valid email address");
   return;
 }
-  console.log({
-    email,
-    password,
-  });
+  try {
+const data = await loginUser({
+  email: email.trim(),
+  password,
+});
+localStorage.setItem("token", data.token);
+
+localStorage.setItem(
+  "user",
+  JSON.stringify(data.user)
+);
+navigate("/dashboard");
+
+  console.log(data);
+} catch (error) {
+  console.log(error);
+  console.log(error.response);
+  console.log(error.response?.data);
+
+  setError(
+    error.response?.data?.message ||
+    "Login failed"
+  );
+}
 };
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden font-sans bg-neutral-950">
@@ -120,6 +144,7 @@ if (!emailRegex.test(email)) {
           <input
             type="email"
             value={email}
+            autoComplete="current-password"
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@gmail.com"
             className="w-full rounded-xl border px-4 py-3.5 text-sm outline-none transition-colors bg-neutral-950 border-neutral-700 text-neutral-200 placeholder-neutral-500 focus:border-orange-500"
@@ -127,6 +152,7 @@ if (!emailRegex.test(email)) {
           <input
             type="password"
             value={password}
+            autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
             placeholder="your password"
             className="w-full rounded-xl border px-4 py-3.5 text-sm outline-none transition-colors bg-neutral-950 border-neutral-700 text-neutral-200 placeholder-neutral-500 focus:border-orange-500"
@@ -136,6 +162,7 @@ if (!emailRegex.test(email)) {
           <button
             type="submit"
             className="w-full rounded-xl bg-orange-500 hover:bg-orange-400 transition-colors text-neutral-950 font-semibold py-3.5 flex items-center justify-center gap-2"
+
           >
             Continue <ArrowRight className="w-4 h-4" />
           </button>
