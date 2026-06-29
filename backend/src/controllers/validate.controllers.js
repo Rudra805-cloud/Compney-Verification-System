@@ -27,6 +27,15 @@ async function companyValidationController(req, res) {
 
   // CACHE RETURN
   if (company && !force && !isStale) {
+    await Validation.create({
+        userId,
+        companyId: company._id,
+        appliedChecks: company.appliedChecks,
+        trustScore: company.trustScore,
+        riskLevel: company.riskLevel,
+        summary: company.summary,
+        validatedAt: company.lastValidatedAt,
+      });
     return res.json({
       success: true,
       cached: true,

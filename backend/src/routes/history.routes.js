@@ -4,7 +4,7 @@ import { getHistoryController,getHistoryDetailsController } from "../controllers
 const historyRouter=Router();
 
 /**
- * @route GET /history?page=2&limit=20
+ * @route GET /history?page=1&limit=20
  * @description get history side baar list
  * @access private 
  */
@@ -18,9 +18,5 @@ historyRouter.get('/',authMiddleware,getHistoryController);
  */
 
 historyRouter.get('/:validationId',authMiddleware, getHistoryDetailsController);
-// historyRouter.get('/:validationId', (req, res) => {
-//   return res.json({
-//     id: req.params.validationId
-//   });
-// });
+
 export {historyRouter}

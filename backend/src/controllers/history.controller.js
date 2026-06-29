@@ -17,7 +17,8 @@ async function getHistoryController(req, res) {
       .sort({ validatedAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
-      .select("_id validatedAt")
+      
+      .select("_id validatedAt trustScore ")
       .populate("companyId", "hostname");
     if (history.length === 0) {
       return res.status(404).json({
