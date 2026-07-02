@@ -54,6 +54,8 @@ export default function ScanResult({
   theme = "dark",
 }) {
   const dk = theme === "dark";
+  const validatedAt =
+    result?.companyId?.lastValidatedAt || result?.lastValidatedAt;
 
   if (status === "idle" || !result) return null;
 
@@ -69,9 +71,7 @@ export default function ScanResult({
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <span
-          className={`text-sm ${
-            dk ? "text-neutral-300" : "text-neutral-600"
-          }`}
+          className={`text-sm ${dk ? "text-neutral-300" : "text-neutral-600"}`}
           style={{ fontFamily: "'JetBrains Mono', monospace" }}
         >
           {result.companyId?.hostname || domain}
@@ -113,8 +113,8 @@ export default function ScanResult({
                   score >= 80
                     ? "text-cyan-400"
                     : score >= 50
-                    ? "text-orange-400"
-                    : "text-red-400"
+                      ? "text-orange-400"
+                      : "text-red-400"
                 }`}
               >
                 {score}/100
@@ -157,20 +157,20 @@ export default function ScanResult({
               </span>
             </p>
             <p
-  className={`text-xs mt-1 ${
-    dk ? "text-neutral-500" : "text-neutral-500"
-  }`}
->
-  Validated:{" "}
-  {result?.validatedAt &&
-    new Date(result.validatedAt).toLocaleString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })}
-</p>
+              className={`text-xs mt-1 ${
+                dk ? "text-neutral-500" : "text-neutral-500"
+              }`}
+            >
+              Last Validated:{" "}
+              {validatedAt &&
+                new Date(validatedAt).toLocaleString("en-IN", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+            </p>
           </div>
 
           <span
@@ -178,8 +178,8 @@ export default function ScanResult({
               result.riskLevel === "Low"
                 ? "text-cyan-400 border-cyan-400/30 bg-cyan-400/10"
                 : result.riskLevel === "Medium"
-                ? "text-orange-400 border-orange-400/30 bg-orange-400/10"
-                : "text-red-400 border-red-400/30 bg-red-400/10"
+                  ? "text-orange-400 border-orange-400/30 bg-orange-400/10"
+                  : "text-red-400 border-red-400/30 bg-red-400/10"
             }`}
           >
             {result.riskLevel} Risk
@@ -197,8 +197,8 @@ export default function ScanResult({
               result.trustScore >= 70
                 ? "bg-gradient-to-r from-orange-500 to-cyan-400"
                 : result.trustScore >= 40
-                ? "bg-gradient-to-r from-orange-500 to-orange-300"
-                : "bg-gradient-to-r from-orange-500 to-red-500"
+                  ? "bg-gradient-to-r from-orange-500 to-orange-300"
+                  : "bg-gradient-to-r from-orange-500 to-red-500"
             }`}
             style={{ width: `${result.trustScore}%` }}
           />

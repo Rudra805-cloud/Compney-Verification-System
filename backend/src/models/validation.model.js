@@ -25,7 +25,7 @@ const validationSchema = new mongoose.Schema({
   
   summary: String,
 
-  validatedAt: {
+  searchedAt: {
     type: Date,
     default: Date.now
   }

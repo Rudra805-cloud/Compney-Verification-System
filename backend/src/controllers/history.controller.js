@@ -14,12 +14,12 @@ async function getHistoryController(req, res) {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 20;
     const history = await Validation.find({ userId })
-      .sort({ validatedAt: -1 })
+      .sort({ searchedAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
       
-      .select("_id validatedAt trustScore ")
-      .populate("companyId", "hostname");
+      .select("_id searchedAt trustScore ")
+      .populate("companyId","hostname");
     if (history.length === 0) {
       return res.status(404).json({
         success: false,
@@ -55,7 +55,7 @@ async function getHistoryDetailsController(req, res) {
       _id: validationId,
     }).populate(
     "companyId",
-    "hostname websiteUrl"
+    "hostname websiteUrl lastValidatedAt"
   );
   return res.status(200).json({
       success: true,
