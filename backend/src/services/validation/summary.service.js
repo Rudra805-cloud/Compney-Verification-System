@@ -13,7 +13,6 @@ async function getSummary(trustScore, riskLevel, hostname,checks) {
     const lines = [];
 
     // Header
-    lines.push(`Company Validation Summary`);
     lines.push(
       `The company (${hostname}) received a Trust Score of ${trustScore.score}/100 and is classified as ${riskLevel} Risk.`
     );
