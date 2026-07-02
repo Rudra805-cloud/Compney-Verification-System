@@ -23,6 +23,7 @@ export default function Sidebar({
   query = "",
   onNewScan,
   history,
+  selectedHistoryId,
   historyFilter = "",
   onHistoryFilter,
   recents = [],
@@ -147,7 +148,7 @@ export default function Sidebar({
                 onClick={() => onSelectRecent(item)}
                 className={[
                   "w-full text-left flex items-center gap-2.5 rounded-lg px-3.5 py-2 text-sm transition-colors",
-                  query === item.companyId.hostname
+                 selectedHistoryId === item._id
                     ? dk
                       ? "bg-neutral-900 text-neutral-100"
                       : "bg-neutral-100 text-neutral-900"

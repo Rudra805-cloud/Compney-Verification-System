@@ -13,7 +13,7 @@ import { Globe, ArrowUp, Loader2 } from "lucide-react";
  * status      "idle" | "scanning" | "done"
  * theme       "dark" | "light"
  */
-export default function SearchBox({ query = "", onChange, onScan, status = "idle", theme = "dark" }) {
+export default function SearchBox({ query = "", onChange, onScan, onLiveValidation, status = "idle", theme = "dark" }) {
   const dk = theme === "dark";
 
   return (
@@ -50,16 +50,19 @@ export default function SearchBox({ query = "", onChange, onScan, status = "idle
   />
 
   {/* Fresh Validation */}
-  <button
-    className={[
-      "px-3 py-2 rounded-xl border text-xs font-medium transition-colors",
-      dk
-        ? "border-neutral-700 text-neutral-300 hover:bg-neutral-800"
-        : "border-neutral-300 text-neutral-700 hover:bg-neutral-100",
-    ].join(" ")}
-  >
-    ⚡Run Fresh Validation
-  </button>
+ <button
+  onClick={onLiveValidation}
+  disabled={status === "scanning" || !query.trim()}
+  className={[
+    "px-3 py-2 rounded-xl border text-xs font-medium transition-colors",
+    dk
+      ? "border-neutral-700 text-neutral-300 hover:bg-neutral-800"
+      : "border-neutral-300 text-neutral-700 hover:bg-neutral-100",
+    status === "scanning" && "opacity-50 cursor-not-allowed",
+  ].join(" ")}
+>
+ ⚡Run Fresh Validation
+</button>
 
   {/* Search */}
   <button
