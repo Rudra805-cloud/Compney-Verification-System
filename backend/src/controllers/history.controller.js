@@ -55,7 +55,7 @@ async function getHistoryDetailsController(req, res) {
       _id: validationId,
     }).populate(
     "companyId",
-    "hostname websiteUrl lastValidatedAt"
+    "hostname websiteUrl "
   );
   return res.status(200).json({
       success: true,

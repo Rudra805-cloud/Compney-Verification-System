@@ -54,15 +54,17 @@ export default function ScanResult({
   theme = "dark",
 }) {
   const dk = theme === "dark";
-  const validatedAt =
-    result?.companyId?.lastValidatedAt || result?.lastValidatedAt;
+  // const validatedAt =
+  //   result?.companyId?.lastValidatedAt || result?.lastValidatedAt;
+  console.log(result);
+  const validatedAt = result?.lastValidatedAt;
 
   if (status === "idle" || !result) return null;
 
   return (
     <div
       className={[
-        "mt-10 rounded-2xl border p-6 sm:p-7",
+        "mt-6 sm:mt-10 rounded-2xl border p-4 sm:p-6 lg:p-8",
         dk
           ? "border-neutral-800 bg-neutral-900/70"
           : "border-neutral-200 bg-white shadow-sm",
@@ -88,7 +90,7 @@ export default function ScanResult({
       </div>
 
       {/* Scores */}
-      <div className="grid sm:grid-cols-2 gap-x-8 gap-y-2.5 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 sm:gap-x-8 gap-y-2.5 mb-6">
         {SIGNAL_DEFS.map(({ key, label, icon: Icon }) => {
           const score = result.appliedChecks?.[key];
 

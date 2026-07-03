@@ -40,12 +40,12 @@ export default function RecentHistory({ recents = [], onSelect, theme = "dark" }
   };
 
   return (
-    <div className={`mt-10 rounded-2xl border overflow-hidden ${dk ? "border-neutral-800" : "border-neutral-200"}`}>
+    <div className={`mt-6 sm:mt-10 rounded-2xl border overflow-hidden ${dk ? "border-neutral-800" : "border-neutral-200"}`}>
 
       {/* Section header */}
       <div
         className={[
-          "flex items-center gap-2 px-5 py-3 border-b",
+          "flex items-center gap-2 px-3 sm:px-5 py-3 border-b",
           dk
             ? "border-neutral-800 bg-neutral-900/60"
             : "border-neutral-200 bg-neutral-50",
@@ -57,14 +57,14 @@ export default function RecentHistory({ recents = [], onSelect, theme = "dark" }
         </span>
       </div>
 
-      {/* Rows */}
+      {/* Rows - Responsive layout */}
       <div className={dk ? "bg-neutral-900/30" : "bg-white"}>
         {recents.map((item, idx) => (
           <button
             key={item.domain}
             onClick={() => onSelect(item)}
             className={[
-              "w-full flex items-center gap-4 px-5 py-3.5 text-left transition-colors",
+              "w-full flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 px-3 sm:px-5 py-3 sm:py-3.5 text-left transition-colors",
               idx < recents.length - 1
                 ? dk ? "border-b border-neutral-800" : "border-b border-neutral-100"
                 : "",
@@ -73,24 +73,26 @@ export default function RecentHistory({ recents = [], onSelect, theme = "dark" }
                 : "hover:bg-neutral-50 text-neutral-700",
             ].join(" ")}
           >
-            {/* Domain */}
-            <span
-              className="flex-1 text-[13px] truncate"
-              style={{ fontFamily: "'JetBrains Mono', monospace" }}
-            >
-              {item.domain}
-            </span>
+            {/* Domain + Risk (Row on mobile) */}
+            <div className="flex items-center justify-between sm:flex-1 gap-2">
+              <span
+                className="flex-1 text-xs sm:text-[13px] truncate"
+                style={{ fontFamily: "'JetBrains Mono', monospace" }}
+              >
+                {item.domain}
+              </span>
 
-            {/* Risk badge */}
-            <span className={`text-[10px] font-medium rounded-full border px-2.5 py-0.5 shrink-0 ${item.riskClass}`}>
-              {item.risk}
-            </span>
+              {/* Risk badge - shown inline on mobile */}
+              <span className={`text-[10px] font-medium rounded-full border px-2 sm:px-2.5 py-0.5 shrink-0 ${item.riskClass}`}>
+                {item.risk}
+              </span>
+            </div>
 
-            {/* Score + trend */}
-            <div className="flex items-center gap-1.5 shrink-0">
+            {/* Score + trend - right aligned */}
+            <div className="flex items-center justify-end gap-1.5 shrink-0">
               <TrendIcon score={item.score} />
               <span
-                className={`text-sm font-semibold ${
+                className={`text-xs sm:text-sm font-semibold ${
                   item.score >= 70 ? "text-cyan-400" : item.score >= 40 ? "text-orange-300" : "text-red-400"
                 }`}
                 style={{ fontFamily: "'JetBrains Mono', monospace" }}

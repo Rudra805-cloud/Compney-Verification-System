@@ -96,7 +96,7 @@ const runScan = async (raw) => {
   try {
      setSelectedHistoryId(item._id);
     const response = await getHistoryDetails(item._id);
-
+console.log(response.data.data);
     setResult(response.data);
     setQuery(response.data.companyId.hostname);
     setStatus("done");
@@ -166,10 +166,10 @@ const runScan = async (raw) => {
 
       {/* ── Main area ── */}
       <main
-  className={`flex-1 flex flex-col min-w-0 transition-all duration-200 ${
-    sidebarOpen ? "ml-72" : "ml-0"
-  }`}
->
+        className={`flex-1 flex flex-col min-w-0 transition-all duration-200 ${
+          sidebarOpen ? "ml-0 sm:ml-72" : "ml-0"
+        }`}
+      >
         {/* Topbar */}
         <Topbar
           sidebarOpen={sidebarOpen}
@@ -182,11 +182,11 @@ const runScan = async (raw) => {
 
         {/* Scrollable content */}
         <div
-  className={`flex-1 px-6 pb-12 flex flex-col items-center overflow-y-auto ${
-    dk ? "bg-neutral-950" : "bg-neutral-50"
-  }`}
->
-          <div className="w-full max-w-2xl mt-[8vh]">
+          className={`flex-1 px-3 sm:px-6 pb-12 flex flex-col items-center overflow-y-auto ${
+            dk ? "bg-neutral-950" : "bg-neutral-50"
+          }`}
+        >
+          <div className="w-full max-w-2xl mt-[6vh] sm:mt-[8vh]">
             {/* Search / headline */}
             <SearchBox
               query={query}

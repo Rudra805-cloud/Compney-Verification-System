@@ -34,14 +34,14 @@ export default function Sidebar({
   return (
     <aside
       className={[
-        "fixed left-0 top-0 h-screen z-50 shrink-0 overflow-hidden transition-all duration-200  flex flex-col",
-        open ? "w-72" : "w-0",
+        "fixed left-0 top-0 h-screen z-50 shrink-0 overflow-hidden transition-all duration-200 flex flex-col",
+        open ? "w-full sm:w-72" : "w-0",
         dk
           ? "border-neutral-800 bg-neutral-950"
           : "border-neutral-100 bg-white",
       ].join(" ")}
     >
-      <div className="w-72 flex flex-col h-full">
+      <div className="w-full sm:w-72 flex flex-col h-full">
         {/* Logo + collapse */}
         <div className="flex items-center justify-between px-4 py-4">
           <div className="flex items-center gap-2">

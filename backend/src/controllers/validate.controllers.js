@@ -34,7 +34,8 @@ async function companyValidationController(req, res) {
         trustScore: company.trustScore,
         riskLevel: company.riskLevel,
         summary: company.summary,
-        searchedAt: new Date(),,
+        searchedAt: new Date(),
+        lastValidatedAt:company.lastValidatedAt,
       });
     return res.json({
       success: true,
@@ -88,7 +89,9 @@ async function companyValidationController(req, res) {
       trustScore: result.trustScore.score,
       riskLevel: result.riskLevel,
       summary: result.summary,
-      searchedAt: new Date()
+      searchedAt: new Date(),
+      lastValidatedAt:company.lastValidatedAt,
+      
     });
     return res.status(200).json({
       success: true,

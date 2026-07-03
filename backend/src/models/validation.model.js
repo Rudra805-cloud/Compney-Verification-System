@@ -28,6 +28,10 @@ const validationSchema = new mongoose.Schema({
   searchedAt: {
     type: Date,
     default: Date.now
+  },
+  lastValidatedAt: {
+    type: Date,
+    default: Date.now
   }
 });
 const Validation=mongoose.model('Validation',validationSchema);
