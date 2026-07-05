@@ -73,13 +73,13 @@ export default function Sidebar({
           ].join(" ")}
         >
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-orange-500 to-cyan-500 flex items-center justify-center text-xs font-semibold text-white shrink-0">
-            {user?.username?.charAt(0).toUpperCase() || "U"}
+            {user?.name?.charAt(0).toUpperCase() || "U"}
           </div>
           <div className="min-w-0">
             <p
               className={`text-sm font-medium truncate ${dk ? "text-neutral-100" : "text-neutral-900"}`}
             >
-              {user?.username || "Guest"}{" "}
+              {user?.name || "Guest"}{" "}
             </p>
           </div>
         </div>

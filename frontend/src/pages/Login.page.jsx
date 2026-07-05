@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { ShieldCheck, ArrowRight } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { ShieldCheck, ArrowRight, Sun, Moon, Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
 import { loginUser } from "../api/auth.api";
 import Dashboard from "./Dashboard.page";
@@ -60,79 +60,114 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const handleSubmit = async(e) => {
-  e.preventDefault();
+  const [showPassword, setShowPassword] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("theme");
+      return savedTheme === "light" || savedTheme === "dark"
+        ? savedTheme
+        : "dark";
+    }
+    return "dark";
+  });
 
-  setError("");
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      setTheme(savedTheme);
+    }
+  }, []);
 
-  if (!email.trim() || !password.trim()) {
-    setError("Email and password are required");
-    return;
-  }
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+    document.documentElement.classList.toggle("light", theme === "light");
+  }, [theme]);
 
-if (!emailRegex.test(email.trim())) {
-  setError("Please enter a valid email address");
-  return;
-}
-  try {
-const data = await loginUser({
-  email: email.trim(),
-  password,
-});
-localStorage.setItem("token", data.token);
+  const isLight = theme === "light";
 
-localStorage.setItem(
-  "user",
-  JSON.stringify(data.user)
-);
-navigate("/dashboard");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  console.log(data);
-} catch (error) {
-  console.log(error);
-  console.log(error.response);
-  console.log(error.response?.data);
+    setError("");
 
-  setError(
-    error.response?.data?.message ||
-    "Login failed"
-  );
-}
-};
+    if (!email.trim() || !password.trim()) {
+      setError("Email and password are required");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email.trim())) {
+      setError("Please enter a valid email address");
+      return;
+    }
+    try {
+      const data = await loginUser({
+        email: email.trim(),
+        password,
+      });
+      localStorage.setItem("token", data.token);
+
+      localStorage.setItem("user", JSON.stringify(data.user));
+      navigate("/dashboard");
+
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+      console.log(error.response);
+      console.log(error.response?.data);
+
+      setError(error.response?.data?.message || "Login failed");
+    }
+  };
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden font-sans bg-neutral-950">
+    <div
+      className={`relative min-h-screen w-full flex items-center justify-center overflow-hidden font-sans ${
+        isLight
+          ? "bg-slate-50 text-slate-900"
+          : "bg-neutral-950 text-neutral-200"
+      }`}
+    >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap');
         .font-display { font-family: 'Space Grotesk', sans-serif; }
         body, .font-sans { font-family: 'Inter', sans-serif; }
       `}</style>
 
+
       <div
         className="pointer-events-none absolute inset-0"
         style={{
-          backgroundImage:
-            "radial-gradient(700px circle at 15% 10%, rgba(249,115,22,0.10), transparent 60%), radial-gradient(700px circle at 85% 90%, rgba(34,211,238,0.08), transparent 60%)",
+          backgroundImage: isLight
+            ? "radial-gradient(700px circle at 15% 10%, rgba(249,115,22,0.12), transparent 60%), radial-gradient(700px circle at 85% 90%, rgba(34,211,238,0.10), transparent 60%)"
+            : "radial-gradient(700px circle at 15% 10%, rgba(249,115,22,0.10), transparent 60%), radial-gradient(700px circle at 85% 90%, rgba(34,211,238,0.08), transparent 60%)",
         }}
       />
 
-      <CircuitPattern className="absolute -top-4 -right-4 w-64 h-64 sm:w-80 sm:h-80 text-neutral-800" />
       <CircuitPattern
-        className="absolute -bottom-4 -left-4 w-64 h-64 sm:w-80 sm:h-80 text-neutral-800"
+        className={`absolute -top-4 -right-4 w-64 h-64 sm:w-80 sm:h-80 ${isLight ? "text-slate-200" : "text-neutral-800"}`}
+      />
+      <CircuitPattern
+        className={`absolute -bottom-4 -left-4 w-64 h-64 sm:w-80 sm:h-80 ${isLight ? "text-slate-200" : "text-neutral-800"}`}
         flip
       />
 
-      <div className="relative z-10 w-full max-w-md mx-4 rounded-2xl border border-neutral-800 bg-neutral-900 shadow-xl shadow-black/40 p-8 sm:p-10">
+      <div
+        className={`relative z-10 w-full max-w-md mx-4 rounded-2xl border p-8 sm:p-10 ${isLight ? "border-slate-200 bg-white shadow-xl shadow-slate-200/70" : "border-neutral-800 bg-neutral-900 shadow-xl shadow-black/40"}`}
+      >
         <div className="flex items-center gap-2.5 justify-center mb-8">
           <div className="w-9 h-9 rounded-lg bg-orange-500 flex items-center justify-center">
             <ShieldCheck className="w-5 h-5 text-neutral-950" />
           </div>
-          <span className="font-display font-bold text-xl text-white">
+          <span
+            className={`font-display font-bold text-xl ${isLight ? "text-slate-900" : "text-white"}`}
+          >
             Veris
           </span>
         </div>
 
-        <h1 className="font-display font-semibold text-2xl text-center mb-7 text-white">
+        <h1
+          className={`font-display font-semibold text-2xl text-center mb-7 ${isLight ? "text-slate-900" : "text-white"}`}
+        >
           Welcome{" "}
           <span role="img" aria-label="wave">
             👋
@@ -144,33 +179,72 @@ navigate("/dashboard");
           <input
             type="email"
             value={email}
-            autoComplete="current-password"
+            autoComplete="email"
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@gmail.com"
-            className="w-full rounded-xl border px-4 py-3.5 text-sm outline-none transition-colors bg-neutral-950 border-neutral-700 text-neutral-200 placeholder-neutral-500 focus:border-orange-500"
+            className={`w-full rounded-xl border px-4 py-3.5 text-sm outline-none transition-colors ${
+              isLight
+                ? "bg-white border-slate-300 text-slate-900 placeholder-slate-500"
+                : "bg-neutral-950 border-neutral-700 text-neutral-200 placeholder-neutral-500"
+            } focus:border-orange-500`}
           />
-          <input
-            type="password"
-            value={password}
-            autoComplete="current-password"
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="your password"
-            className="w-full rounded-xl border px-4 py-3.5 text-sm outline-none transition-colors bg-neutral-950 border-neutral-700 text-neutral-200 placeholder-neutral-500 focus:border-orange-500"
-          />
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              autoComplete="current-password"
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Your password"
+              className={`w-full rounded-xl border px-4 py-3.5 pr-11 text-sm outline-none transition-colors ${
+                isLight
+                  ? "bg-white border-slate-300 text-slate-900 placeholder-slate-500"
+                  : "bg-neutral-950 border-neutral-700 text-neutral-200 placeholder-neutral-500"
+              } focus:border-orange-500`}
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className={`absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors ${
+                isLight
+                  ? "text-slate-400 hover:text-slate-600"
+                  : "text-neutral-500 hover:text-neutral-300"
+              }`}
+            >
+              {showPassword ? (
+                <EyeOff className="w-4 h-4" />
+              ) : (
+                <Eye className="w-4 h-4" />
+              )}
+            </button>
+          </div>
+          {error && (
+            <p
+              className={`text-sm ${isLight ? "text-red-500" : "text-red-400"}`}
+            >
+              {error}
+            </p>
+          )}
 
           <button
             type="submit"
             className="w-full rounded-xl bg-orange-500 hover:bg-orange-400 transition-colors text-neutral-950 font-semibold py-3.5 flex items-center justify-center gap-2"
-
           >
             Continue <ArrowRight className="w-4 h-4" />
           </button>
 
           <div className="flex items-center gap-3 py-1">
-            <div className="flex-1 border-t border-neutral-800" />
-            <span className="text-xs text-neutral-500">or</span>
-            <div className="flex-1 border-t border-neutral-800" />
+            <div
+              className={`flex-1 border-t ${isLight ? "border-slate-200" : "border-neutral-800"}`}
+            />
+            <span
+              className={`text-xs ${isLight ? "text-slate-500" : "text-neutral-500"}`}
+            >
+              or
+            </span>
+            <div
+              className={`flex-1 border-t ${isLight ? "border-slate-200" : "border-neutral-800"}`}
+            />
           </div>
 
           {/* <button className="w-full rounded-lg border px-4 py-2 text-xs font-medium flex items-center justify-center gap-2 transition-colors bg-neutral-800 border-neutral-700 text-neutral-200 hover:bg-neutral-700">
@@ -180,11 +254,13 @@ navigate("/dashboard");
         </form>
 
         <p className="text-center text-xs mt-6 text-neutral-500"></p>
-        <p className="text-center text-sm mt-5 text-neutral-400">
+        <p
+          className={`text-center text-sm mt-5 ${isLight ? "text-slate-600" : "text-neutral-400"}`}
+        >
           Don't have an account?{" "}
           <Link
             to="/register"
-            className="text-orange-400 hover:text-orange-300 font-medium"
+            className={`${isLight ? "text-orange-600 hover:text-orange-500" : "text-orange-400 hover:text-orange-300"} font-medium`}
           >
             Create Account
           </Link>

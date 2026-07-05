@@ -6,14 +6,20 @@ import ScanResult, { SIGNAL_DEFS } from "../components/ScanResult";
 import RecentHistory from "../components/RecentHistory";
 import { userHistory, getHistoryDetails } from "../api/history.api";
 import { validateCompany, liveValidateCompany,} from "../api/validation.api";
-
+import Navbar from "../components/Navbar";
 
 
 
 /* ─── Dashboard ──────────────────────────────────────────────────────────── */
 export default function Dashboard() {
   const [user, setUser] = useState(null);
-  const [theme, setTheme] = useState("dark"); // "dark" | "light"
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("theme");
+      return savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark";
+    }
+    return "dark";
+  }); // "dark" | "light"
   const [sidebarOpen, setSidebar] = useState(true);
   const [query, setQuery] = useState("");
   const [history, setHistory] = useState([]);
@@ -25,6 +31,19 @@ export default function Dashboard() {
   const [result, setResult] = useState(null);
 
   const dk = theme === "dark";
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      setTheme(savedTheme);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+    document.documentElement.classList.toggle("light", theme === "light");
+  }, [theme]);
+
   // get logged in user
   useEffect(() => {
     const storedUser = localStorage.getItem("user");

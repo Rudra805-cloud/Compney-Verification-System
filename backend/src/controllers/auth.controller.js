@@ -11,8 +11,8 @@ import jwt from "jsonwebtoken";
 
 async function handelUserRegisterController(req, res) {
   try {
-    const { username, password, email } = req.body;
-    if (!username || !password || !email) {
+    const { name, password, email } = req.body;
+    if (!name || !password || !email) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
@@ -32,7 +32,7 @@ async function handelUserRegisterController(req, res) {
 
     //create user
     const user = await User.create({
-      username,
+      name,
       email,
       password: hashPassword,
     });
@@ -52,7 +52,7 @@ async function handelUserRegisterController(req, res) {
       token,
       user: {
         userId: user._id,
-        username: user.username,
+        name: user.name,
         email: user.email,
       },
     });
@@ -112,7 +112,7 @@ async function handelUserLoginController(req, res) {
       token,
       user: {
         userId: user._id,
-        username: user.username,
+        name: user.name,
         email: user.email,
       },
     });
@@ -144,7 +144,7 @@ async function handelProfileController(req, res) {
       message: "User details fetched successfully ",
       user: {
         id: user._id,
-        username: user.username,
+        name: user.name,
         email: user.email,
       },
     });
