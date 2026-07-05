@@ -109,8 +109,6 @@ export default function LoginPage() {
 
       localStorage.setItem("user", JSON.stringify(data.user));
       navigate("/dashboard");
-
-      console.log(data);
     } catch (error) {
       console.log(error);
       console.log(error.response);

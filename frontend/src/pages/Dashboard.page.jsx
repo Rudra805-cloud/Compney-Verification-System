@@ -61,7 +61,7 @@ const runScan = async (raw) => {
     setResult(null);
 
     const { data } = await validateCompany(domain);
-     console.log("API Result:", data);
+
     setResult(data);   // ✅
     setStatus("done");
 
@@ -79,7 +79,7 @@ const runScan = async (raw) => {
 
     const {data} = await liveValidateCompany(query);
 
-     console.log("API Result:", data);
+  
     setResult(data);  
     setStatus("done");
 

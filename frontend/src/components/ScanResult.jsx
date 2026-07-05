@@ -56,7 +56,7 @@ export default function ScanResult({
   const dk = theme === "dark";
   // const validatedAt =
   //   result?.companyId?.lastValidatedAt || result?.lastValidatedAt;
-  console.log(result);
+ 
   const validatedAt = result?.lastValidatedAt;
 
   if (status === "idle" || !result) return null;
