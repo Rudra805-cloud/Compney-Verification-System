@@ -71,16 +71,17 @@ export default function ScanResult({
       ].join(" ")}
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between gap-3 mb-5">
         <span
-          className={`text-sm ${dk ? "text-neutral-300" : "text-neutral-600"}`}
+          className={`text-sm min-w-0 flex-1 truncate ${dk ? "text-neutral-300" : "text-neutral-600"}`}
           style={{ fontFamily: "'JetBrains Mono', monospace" }}
+          title={result.companyId?.hostname || domain}
         >
           {result.companyId?.hostname || domain}
         </span>
 
         <span
-          className={`text-[10px] uppercase tracking-wide ${
+          className={`text-[10px] uppercase tracking-wide shrink-0 ${
             dk ? "text-neutral-500" : "text-neutral-400"
           }`}
           style={{ fontFamily: "'JetBrains Mono', monospace" }}

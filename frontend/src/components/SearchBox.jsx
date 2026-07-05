@@ -40,6 +40,7 @@ export default function SearchBox({ query = "", onChange, onScan, onLiveValidati
           <Globe className={`w-4 h-4 shrink-0 ${dk ? "text-neutral-500" : "text-neutral-400"}`} />
 
           <input
+          maxLength={253}
             value={query}
             onChange={(e) => onChange(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && onScan(query)}

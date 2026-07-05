@@ -1,5 +1,6 @@
 import React from "react";
-import { ShieldCheck, PanelLeft, Plus, Search } from "lucide-react";
+import { ShieldCheck, PanelLeft, Plus, Search ,LogOut} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 /**
  * Sidebar
  *
@@ -29,8 +30,13 @@ export default function Sidebar({
   recents = [],
   onSelectRecent,
 }) {
+  const navigate = useNavigate();
   const dk = theme === "dark";
-
+const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+};
   return (
     <aside
       className={[
@@ -177,7 +183,25 @@ export default function Sidebar({
               </button>
             ))}
           </div>
+          
         </div>
+        <div
+  className={`border-t px-3 py-3 ${
+    dk ? "border-neutral-800" : "border-neutral-200"
+  }`}
+>
+  <button
+    className={`w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
+      dk
+        ? "text-neutral-400 hover:bg-neutral-900 hover:text-red-400"
+        : "text-neutral-600 hover:bg-neutral-100 hover:text-red-500"
+    }`}
+    onClick={handleLogout}
+  >
+    <LogOut className="w-4 h-4"  />
+    Logout
+  </button>
+</div>
       </div>
     </aside>
   );

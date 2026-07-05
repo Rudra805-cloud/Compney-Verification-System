@@ -10,7 +10,6 @@ import Navbar from "../components/Navbar";
 
 
 
-/* ─── Dashboard ──────────────────────────────────────────────────────────── */
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [theme, setTheme] = useState(() => {
