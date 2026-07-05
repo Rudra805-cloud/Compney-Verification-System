@@ -37,7 +37,7 @@ export default function Topbar({ sidebarOpen, onOpenSidebar, theme = "dark", onT
         >
           <span className="hidden sm:inline">Veris</span>
           <span className="sm:hidden">V</span>
-          <ChevronDown className={`w-4 h-4 shrink-0 ${dk ? "text-neutral-500" : "text-neutral-400"}`} />
+          {/* <ChevronDown className={`w-4 h-4 shrink-0 ${dk ? "text-neutral-500" : "text-neutral-400"}`} /> */}
         </button>
       </div>
 
