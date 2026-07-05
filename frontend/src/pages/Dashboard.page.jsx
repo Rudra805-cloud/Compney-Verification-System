@@ -96,7 +96,6 @@ const runScan = async (raw) => {
   try {
      setSelectedHistoryId(item._id);
     const response = await getHistoryDetails(item._id);
-console.log(response.data.data);
     setResult(response.data);
     setQuery(response.data.companyId.hostname);
     setStatus("done");
