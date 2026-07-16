@@ -217,7 +217,6 @@ const runScan = async (raw) => {
             {/* Animated scan results */}
             <ScanResult
               status={status}
-              domain={query}
               result={result}
               theme={theme}
             />

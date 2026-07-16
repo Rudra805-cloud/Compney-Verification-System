@@ -49,11 +49,12 @@ export const SIGNAL_DEFS = [
 
 export default function ScanResult({
   status = "idle",
-  domain = "",
   result = null,
   theme = "dark",
 }) {
   const dk = theme === "dark";
+  const companyName =
+    result?.companyId?.hostname || result?.hostname || result?.domain || "Scanned company";
   // const validatedAt =
   //   result?.companyId?.lastValidatedAt || result?.lastValidatedAt;
  
@@ -75,9 +76,9 @@ export default function ScanResult({
         <span
           className={`text-sm min-w-0 flex-1 truncate ${dk ? "text-neutral-300" : "text-neutral-600"}`}
           style={{ fontFamily: "'JetBrains Mono', monospace" }}
-          title={result.companyId?.hostname || domain}
+          title={companyName}
         >
-          {result.companyId?.hostname || domain}
+          {companyName}
         </span>
 
         <span
