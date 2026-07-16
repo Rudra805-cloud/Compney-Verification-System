@@ -2,109 +2,125 @@
 
 ## Overview
 
-Security is a fundamental part of Veris. The application follows several security best practices to protect user accounts, APIs, and validation data.
+Veris protects user accounts, validation history, and API access using JWT authentication, password hashing, and route-level authorization.
 
-The backend implements authentication, password hashing, authorization middleware, and input validation to ensure that only authenticated users can access protected resources.
+The security model is simple: the frontend stores the token after login or registration, and the backend verifies that token before allowing access to protected resources.
 
 ---
 
 ## Security Features
 
 - JWT-based authentication
-- Password hashing using bcrypt
+- Password hashing with bcrypt
 - Protected API routes
 - Authorization middleware
-- Secure password storage
-- Input validation
-- Error handling
+- Private user profile and history endpoints
+- Input checks in the frontend forms
+- Structured error responses
 
 ---
 
-# Authentication
+## Authentication Flow
 
-Veris uses **JSON Web Tokens (JWT)** for user authentication.
+1. A user registers or logs in.
+2. The backend creates a signed JWT.
+3. The frontend stores the token in `localStorage`.
+4. The frontend sends the token in the `Authorization` header for protected requests.
+5. The backend verifies the token through middleware before continuing.
 
-When a user successfully registers or logs in, the backend generates a signed JWT. The frontend stores this token in **localStorage** and includes it in the `Authorization` header for all protected API requests.
-
-Example:
+Example header:
 
 ```http
 Authorization: Bearer <JWT_TOKEN>
 ```
 
-The authentication middleware verifies the token before allowing access to protected resources.
+The authentication middleware rejects requests without a valid token and returns a `401` response.
 
 ---
 
-# Password Security
+## Password Security
 
 User passwords are never stored in plain text.
 
-Before saving a new user, the password is securely hashed using **bcrypt**.
+- Passwords are hashed with bcrypt before being saved.
+- The login flow compares the entered password against the stored hash.
+- The `User` schema excludes the password field from normal query results.
 
-During login, the entered password is compared with the stored hash using bcrypt's comparison function.
-
-This ensures that user credentials remain protected even if the database is compromised.
-
----
-
-# Protected Routes
-
-The following endpoints require authentication:
-
-- GET `/api/auth/profile`
-- POST `/api/validate`
-- GET `/api/history`
-- GET `/api/history/:validationId`
-
-Requests without a valid JWT receive an authentication error.
+This reduces the risk of exposing raw credentials if the database is accessed incorrectly.
 
 ---
 
-# Error Handling
+## Route Protection
 
-The API returns consistent HTTP status codes and JSON responses to help clients identify and handle errors effectively.
+The protected backend routes are:
 
-| Status Code | Description |
-|-------------|-------------|
-| 200 | Request completed successfully |
-| 201 | Resource created successfully |
-| 400 | Invalid request or input |
-| 401 | Authentication failed or missing token |
-| 404 | Requested resource not found |
-| 500 | Internal server error |
+- `GET /api/auth/profile`
+- `POST /api/validate`
+- `GET /api/history`
+- `GET /api/history/:validationId`
+
+These routes require a valid bearer token. Without it, the backend returns an authorization failure and does not run the request handler.
+
+---
+
+## Data Exposure
+
+Veris keeps different kinds of data in different collections:
+
+- Users store identity and login data.
+- Companies store current validation state.
+- Validations store per-user history entries.
+
+This separation helps avoid unnecessary duplication and keeps sensitive account data isolated from validation results.
+
+---
+
+## Error Handling
+
+| Status Code | Meaning |
+|-------------|---------|
+| 200 | Request completed successfully. |
+| 201 | Resource created successfully. |
+| 400 | Invalid request or input. |
+| 401 | Authentication failed or token missing. |
+| 404 | Requested resource was not found. |
+| 500 | Internal server error. |
 
 Example error response:
 
 ```json
 {
   "success": false,
-  "message": "Authentication failed."
+  "message": "Invalid or expired token"
 }
 ```
 
 ---
 
-# Security Considerations
+## Validation Safety Notes
 
-The current implementation includes the following security measures:
-
-- JWT-based authentication for protected endpoints
-- Password hashing using bcrypt
-- Authorization middleware for private routes
-- Separation of authentication, validation, and company data into different collections
-- Validation caching to reduce unnecessary external API requests
+- The validation flow relies on public website data, but the app still treats the result as untrusted until it is scored.
+- Cached validation reduces repeated network calls to external sources.
+- User-facing forms validate basic input before sending requests.
+- Risky or unavailable signals are surfaced in the score and summary rather than hidden.
 
 ---
 
-# Future Security Enhancements
+## Current Limitations
 
-The following improvements are planned for future versions of Veris:
+- No refresh token flow.
+- No email verification.
+- No password reset flow.
+- No role-based access control.
+- No rate limiting.
+- No multi-factor authentication.
 
-- Rate limiting to prevent API abuse
-- Refresh token support
-- Email verification
-- Password reset functionality
-- Role-based access control (RBAC)
-- Request logging and monitoring
-- Multi-factor authentication (MFA)
+---
+
+## Recommended Next Improvements
+
+- Add request rate limiting.
+- Move tokens to a safer storage strategy if the frontend requirements change.
+- Add refresh-token support for longer sessions.
+- Add email verification for new registrations.
+- Add monitoring and audit logging for auth and validation failures.
