@@ -1,0 +1,28 @@
+//data model look
+{
+  "companyId": "...",
+  "userId": "...",
+  "status": "completed",
+  "verdict": "Likely Legitimate",
+  "riskLevel": "Low",
+  "confidence": 89,
+  "summary": "The company has a strong public presence...",
+  "publicView": "Generally positive",
+  "websiteAssessment": "Website appears legitimate",
+  "positiveSignals": [
+    "Established domain",
+    "Consistent company information",
+    "Positive customer feedback"
+  ],
+  "riskSignals": [
+    "Limited independent reviews"
+  ],
+  "sources": [
+    {
+      "title": "Company Review",
+      "url": "https://example.com/review",
+      "sourceType": "review"
+    }
+  ],
+  "researchedAt": "2026-08-25T..."
+}
